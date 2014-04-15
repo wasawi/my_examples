@@ -34,7 +34,7 @@ void ofApp::draw(){
 //	cam.end();
 
 	//-----------------------------------
-    // draw to fbo
+	// draw to fbo
 	fbo.begin();
 	loadMatrixOF();
 //	loadMatrixGL();	//does the same thing
@@ -44,7 +44,7 @@ void ofApp::draw(){
 	cam.end();
 	
 	//-----------------------------------
-    // draw the fbo to screen
+	// draw the fbo to screen
 	fbo.draw(ofGetWidth()/2,0,ofGetWidth(),ofGetHeight());
 	// or draw upsidedown
 //	fbo.draw(ofGetWidth()/2,ofGetHeight(),ofGetWidth(),-ofGetHeight());
@@ -94,15 +94,14 @@ void ofApp::loadMatrixGL() {
 
 //--------------------------------------------------------------
 void ofApp::ofLoadIdentity() {
-    glMatrixMode(GL_PROJECTION_MATRIX);
-    glLoadIdentity();
-    glMatrixMode(GL_MODELVIEW_MATRIX);
-    glLoadIdentity();
+	glMatrixMode(GL_PROJECTION_MATRIX);
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW_MATRIX);
+	glLoadIdentity();
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-
 	switch(key)
     {
 		case ' ':
@@ -115,7 +114,6 @@ void ofApp::keyPressed(int key){
 			//			gifEncoder.save(date+".gif");
 			break;
 	}
-	
 }
 
 //--------------------------------------------------------------

@@ -60,7 +60,7 @@ ehthumbs.db
 Icon?
 Thumbs.db
 
-
 # my ignores #
 ##############
-
+output/
+settings/
