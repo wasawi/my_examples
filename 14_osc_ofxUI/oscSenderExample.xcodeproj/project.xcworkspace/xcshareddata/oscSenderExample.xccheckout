@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C402F78E-EF8D-41F1-83CF-2BAA904B4750</string>
+	<key>IDESourceControlProjectName</key>
+	<string>oscSenderExample</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>17E4727A-70C5-4D4C-A2BD-A63A0F5315D4</key>
+		<string>https://github.com/wasawi/openFrameworks</string>
+		<key>1928F8EE-83FC-433C-BE29-9561FC680040</key>
+		<string>https://github.com/wasawi/my_examples.git</string>
+		<key>7AAB5560-5D81-44F5-B8E7-3A129E952228</key>
+		<string>https://github.com/wasawi/ofxUI.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>apps/my_examples/14_osc_ofxUI/oscSenderExample.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>17E4727A-70C5-4D4C-A2BD-A63A0F5315D4</key>
+		<string>../../../../..</string>
+		<key>1928F8EE-83FC-433C-BE29-9561FC680040</key>
+		<string>../../..</string>
+		<key>7AAB5560-5D81-44F5-B8E7-3A129E952228</key>
+		<string>../../../../../addons/ofxUI</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/wasawi/openFrameworks</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>17E4727A-70C5-4D4C-A2BD-A63A0F5315D4</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>1928F8EE-83FC-433C-BE29-9561FC680040</string>
+			<key>IDESourceControlWCCName</key>
+			<string>my_examples</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>7AAB5560-5D81-44F5-B8E7-3A129E952228</string>
+			<key>IDESourceControlWCCName</key>
+			<string>ofxUI</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>17E4727A-70C5-4D4C-A2BD-A63A0F5315D4</string>
+			<key>IDESourceControlWCCName</key>
+			<string>openFrameworks</string>
+		</dict>
+	</array>
+</dict>
+</plist>
