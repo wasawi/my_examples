@@ -2,13 +2,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-
-	username = ofSystem("whoami");
-	vector <string> cleanString;
-	cleanString = ofSplitString(username, "\n");
-	username = cleanString[0];
-	cout << "username = /"<< username<<"/";
 	
+	ofLogNotice("ofGetUserName()")<<ofGetUserName();
+	ofLogNotice("ofGetAppName()")<<ofGetAppName();
+	ofLogNotice("ofGetAppPath()")<<ofGetAppPath();
+	ofLogNotice("ofGetCurrentPath()")<<ofGetCurrentPath();
+	
+	
+	
+//--------------------------------------------------------------
+	// draw something
 	w=h=255;
 	img.allocate(w, h, OF_IMAGE_COLOR);
 	img.setColor(ofColor::white);
@@ -19,16 +22,30 @@ void ofApp::setup(){
 		}
 	}
 	img.update();
+
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
+
+	if (counter == 300){
+		
+		// ATTENTION
+		// THIS CAN DESTROY ALL YOUR WORK!!
+		// make sure you understand what you are doing
+		// keep inside the counter for security
+
+		ofRestart(0);
+		//	ofCrash();
+	}
+	counter++;
 
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
 
+	ofDrawBitmapString(ofToString(counter), 10, 20);
 	img.draw(100, 100);
 }
 
