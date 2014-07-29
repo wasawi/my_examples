@@ -35,7 +35,7 @@ void ofApp::update(){
 		// make sure you understand what you are doing
 		// keep inside the counter for security
 
-		ofRestart(0);
+		ofRestart();
 		//	ofCrash();
 	}
 	counter++;

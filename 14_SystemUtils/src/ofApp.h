@@ -65,8 +65,8 @@ class ofApp : public ofBaseApp{
 				ofExit();
 				break;
 			default:
-				// not working well
-//				string restart =ofGetAppPath()+" &\n";
+				// not working well :/
+//				string restart =ofGetAppPath()+" &";
 //				ofSystem(restart);
 //				ofLogNotice("ofRestart()")<<"new app launched";
 //				ofExit();
