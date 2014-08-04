@@ -37,6 +37,7 @@ void ofApp::update(){
 
 		ofRestart();
 		//	ofCrash();
+		// ofKillApp("iTunes");
 	}
 	counter++;
 
