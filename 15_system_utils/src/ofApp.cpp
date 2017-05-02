@@ -2,7 +2,8 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	
+	ofLogToConsole();
+	ofSetLogLevel(OF_LOG_VERBOSE);
 	ofLogNotice("ofGetUserName()")<<ofGetUserName();
 	ofLogNotice("ofGetAppName()")<<ofGetAppName();
 	ofLogNotice("ofGetAppPath()")<<ofGetAppPath();
@@ -27,7 +28,6 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
 	if (counter == 300){
 		
 		// ATTENTION
@@ -36,11 +36,11 @@ void ofApp::update(){
 		// keep inside the counter for security
 
 		ofRestart();
-		//	ofCrash();
+//		ofCrash(0);
+//		ofCrash(2);
 		// ofKillApp("iTunes");
 	}
 	counter++;
-
 }
 
 //--------------------------------------------------------------

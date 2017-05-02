@@ -32,16 +32,16 @@ class ofApp : public ofBaseApp{
 	
 	//--------------------------------------------------------------
 	string ofGetAppName(){
-		string appname = ofSystem("ls ./");
-		vector <string> cleanString = ofSplitString(appname, "\n");
+		string appname = ofFilePath::getCurrentExePath();
+		vector <string> cleanString = ofSplitString(appname, ofFilePath::getCurrentWorkingDirectory()+"\\",true,true);
 		appname = cleanString[0];
 		return appname;
 	}
 
 	//--------------------------------------------------------------
 	string ofGetAppPath(){
-		string appname = ofGetAppName()+"\n";
-		string appPath = ofSystem("find `pwd` -name " + appname);
+//		string appname = ofGetAppName()+"\n";
+		string appPath = ofFilePath::getCurrentExePath();
 		vector <string> cleanString = ofSplitString(appPath, "\n");
 		appPath = cleanString[0];
 		return appPath;
@@ -49,7 +49,7 @@ class ofApp : public ofBaseApp{
 
 	//--------------------------------------------------------------
 	string ofGetCurrentPath(){
-		string currentPath = ofSystem("pwd");
+		string currentPath = ofFilePath::getCurrentWorkingDirectory();
 		vector <string> cleanString = ofSplitString(currentPath, "\n");
 		currentPath = cleanString[0];
 		return currentPath;
@@ -60,7 +60,13 @@ class ofApp : public ofBaseApp{
 		ofLogNotice("ofRestart()")<<"restarting...";
 		switch (type) {
 			case 0:
+#ifdef OF_TARGET_OSX
 				ofSystem("open " + ofGetAppPath());
+#endif // OF_TARGET_OSX
+#ifdef TARGET_WIN32
+				ofSystem("start " + ofGetAppPath());
+#endif // TARGET_WIN32
+
 				ofLogNotice("ofRestart()")<<"new app launched";
 				ofExit();
 				break;
@@ -85,11 +91,11 @@ class ofApp : public ofBaseApp{
 					*((unsigned int*)0) = 0xDEAD;	// crash immediately and message
 					break;
 				default:
-					raise(SIGSEGV);					// crash immediately and message
+					abort();					// crash immediately and message
 					break;
 			}
 	}
-
+	
 	//--------------------------------------------------------------
 	void ofKillApp(string appname){
 
