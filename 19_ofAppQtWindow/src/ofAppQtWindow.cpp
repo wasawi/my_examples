@@ -46,6 +46,7 @@ void ofAppQtWindow::setup(const ofGLWindowSettings & settings) {
 
 //------------------------------------------------------------
 void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
+//	cout << "setup" << endl;
 	if (windowPtr) {
 		ofLogError() << "window already setup, probably you are mixing old and new style setup";
 		ofLogError() << "call only ofCreateWindow(settings) or ofSetupOpenGL(...)";
@@ -168,6 +169,7 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 //------------------------------------------------------------
 void ofAppQtWindow::update() {
 //	cout << "update" << endl;
+	events().notifyUpdate();
 
 	//////////////////////////////////////
 	// process all Qt events
@@ -175,11 +177,9 @@ void ofAppQtWindow::update() {
 	windowPtr->update();
 	//////////////////////////////////////
 
-	events().notifyUpdate();
-
 	//show the window right before the first draw call.
 	if (bWindowNeedsShowing && windowPtr) {
-//		windowPtr->show();
+		// GLFW update was here
 		bWindowNeedsShowing = false;
 		if (settings.windowMode == OF_FULLSCREEN) {
 			setFullscreen(true);

@@ -19,25 +19,9 @@ QtGLWidget::QtGLWidget(ofAppQtWindow* _windowPtr){
 QtGLWidget::~QtGLWidget(){
 }
 
-void QtGLWidget::makeCurrent() {
-	QOpenGLWidget::makeCurrent(); // very important
-}
-
-//void QtGLWidget::resize(int w, int h)
-//{
-////	size(w, h);
-////	setFixedWidth(w);
-////	setFixedHeight(h);
-//
-////	QResizeEvent* event(QSize(w,h), QSize(w, h));
-////	resizeEvent(event);
-//	QOpenGLWidget::resize(w, h);
-////	resizeGL(w, h);
-//}
-
 void QtGLWidget::initializeGL()
 {
-	cout << "initializeGL" << endl;
+//	cout << "initializeGL" << endl;
 }
 
 void QtGLWidget::paintGL()
@@ -47,19 +31,8 @@ void QtGLWidget::paintGL()
 
 void QtGLWidget::resizeGL(int width, int height)
 {
-	cout << "resizeGL" << endl;
-
-	//	ofSetWindowShape(width, height);
-//	QOpenGLWidget::resize(width, height);
-//	ofAppPtr->windowResized(width, height);
-
-//	static ofResizeEventArgs resizeEventArgs(width, height);
-//	ofNotifyEvent(ofEvents().windowResized, resizeEventArgs);
-
+//	cout << "resizeGL" << endl;
 	instance->events().notifyWindowResized(width, height);
-	glViewport(0, 0, width, height);
-	ofSetupScreen();
-	glFlush();
 }
 
 //------------------------------------------------------------
@@ -175,26 +148,6 @@ void QtGLWidget::keyReleaseEvent(QKeyEvent * event)
 
 void QtGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	/*
-	static ofMouseEventArgs mouseEventArgs;
-	mouseEventArgs.x = event->pos().x();
-	mouseEventArgs.y = event->pos().y();
-	mouseEventArgs.button = mousePressed;
-
-//	ofAppPtr->mouseX = event->pos().x();
-//	ofAppPtr->mouseY = event->pos().y();
-	if (mousePressed == 0) {
-//		ofAppPtr->mouseMoved(event->pos().x(), event->pos().y());
-//		ofNotifyEvent(ofEvents().mouseMoved, mouseEventArgs);
-	}
-	else {
-//		ofAppPtr->mouseDragged(event->pos().x(), event->pos().y(), mousePressed);
-//		ofNotifyEvent(ofEvents().mouseDragged, mouseEventArgs);
-	}
-
-	lastPos = event->pos();
-	*/
-
 	double x = event->x();
 	double y = event->y();
 
@@ -244,19 +197,6 @@ void QtGLWidget::mousePressEvent(QMouseEvent *event)
 
 void QtGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	/*
-	lastPos = event->pos();
-	mousePressed = 0;
-
-	static ofMouseEventArgs mouseEventArgs;
-	mouseEventArgs.x = event->pos().x();
-	mouseEventArgs.y = event->pos().y();
-	mouseEventArgs.button = mousePressed;
-
-//	ofAppPtr->mouseReleased(event->pos().x(), event->pos().y(), event->button());
-	ofNotifyEvent(ofEvents().mouseReleased, mouseEventArgs);
-	*/
-
 	Qt::MouseButton qtButton = event->button();
 	int ofButton;
 
@@ -288,25 +228,22 @@ void QtGLWidget::mouseReleaseEvent(QMouseEvent *event)
 //{
 //}
 
-void QtGLWidget::resizeEvent(QResizeEvent * event)
-{
-	cout << "resizeEvent" << endl;
-
-	int w = event->size().width();
-	int h = event->size().height();
-
-	if (instance->windowMode == OF_WINDOW) {
-		instance->windowW = w * instance->pixelScreenCoordScale;
-		instance->windowH = h * instance->pixelScreenCoordScale;
-	}
-	instance->currentW = w;
-	instance->currentH = h;
-	instance->events().notifyWindowResized(w*instance->pixelScreenCoordScale, h*instance->pixelScreenCoordScale);
-	instance->nFramesSinceWindowResized = 0;
-
-//	static ofResizeEventArgs resizeEventArgs(w, h);
-//	ofNotifyEvent(ofEvents().windowResized, resizeEventArgs);
-}
+//void QtGLWidget::resizeEvent(QResizeEvent * event)
+//{
+//	cout << "resizeEvent" << endl;
+//	int w = event->size().width();
+//	int h = event->size().height();
+//	if (instance->windowMode == OF_WINDOW) {
+//		instance->windowW = w * instance->pixelScreenCoordScale;
+//		instance->windowH = h * instance->pixelScreenCoordScale;
+//	}
+//	instance->currentW = w;
+//	instance->currentH = h;
+//	instance->events().notifyWindowResized(w*instance->pixelScreenCoordScale, h*instance->pixelScreenCoordScale);
+//	instance->nFramesSinceWindowResized = 0;
+////	static ofResizeEventArgs resizeEventArgs(w, h);
+////	ofNotifyEvent(ofEvents().windowResized, resizeEventArgs);
+//}
 
 //void QtGLWidget::showEvent(QShowEvent * event)
 //{

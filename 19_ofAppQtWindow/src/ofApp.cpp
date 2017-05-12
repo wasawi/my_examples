@@ -11,7 +11,7 @@ void ofApp::setup(){
 	w->show();
 
 
-    sliderInt = 50;
+    sliderInt = 100;
 	color = ofColor::blue;
 
 	// POPULATE TABLE WITH VECTOR OF STRINGS
@@ -108,7 +108,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-	cursor = ofPoint(x, y);
+
 }
 
 //--------------------------------------------------------------

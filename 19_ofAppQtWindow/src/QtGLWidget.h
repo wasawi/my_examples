@@ -28,9 +28,7 @@ public:
 //	shared_ptr<ofApp> ofAppPtr;
 	ofAppQtWindow* instance;
 
-	void makeCurrent();
 //	void swapBuffers();
-//	void resize(int w, int h);
 
 protected:
 	void initializeGL();					// required from Qt
@@ -70,7 +68,7 @@ protected:
 	//void 	moveEvent(QMoveEvent *event);
 	//bool 	nativeEvent(const QByteArray &eventType, void *message, long *result);
 	//void 	paintEvent(QPaintEvent *event);
-	void 	resizeEvent(QResizeEvent *event);
+	//void 	resizeEvent(QResizeEvent *event); // implementing this event will cause resizeGL to stop working..
 	//void 	showEvent(QShowEvent *event);
 	//void 	tabletEvent(QTabletEvent *event);
 	//void 	wheelEvent(QWheelEvent *event);

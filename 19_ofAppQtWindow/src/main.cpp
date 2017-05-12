@@ -94,8 +94,8 @@ int main( )
 
 	shared_ptr<ofApp> app = make_shared<ofApp>();
 	ofAppQtWindow window;
-	window.setAppPtr(app);
-	ofSetupOpenGL(&window, 800, 300, OF_WINDOW);
+//	window.setAppPtr(app);
+	ofSetupOpenGL(&window, 800, 400, OF_WINDOW);
 	ofRunApp(app);
 
 }
