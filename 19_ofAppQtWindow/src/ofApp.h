@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "GuiApp.h"
+#include "ofxGui.h"
 
 #include "Controller.h"
 #include "mainwindow.h"
@@ -16,7 +17,8 @@ class ofApp : public ofBaseApp{
         void setup();
         void update();
         void draw();
-		void draw(int drawPlugin);
+		void setupGui();
+		void drawGui(ofEventArgs & args);
 
         void keyPressed(ofKeyEventArgs& key);
         void keyReleased(ofKeyEventArgs& key);
@@ -30,14 +32,12 @@ class ofApp : public ofBaseApp{
         void dragEvent(ofDragInfo dragInfo);
         void gotMessage(ofMessage msg);
 
-        int sliderInt;
         Ui::MainWindow *ui;
 		
-		ofColor color;
 		ofPoint cursor;
 		string key_str;
 
-		shared_ptr<GuiApp> gui;
+		shared_ptr<GuiApp> QtGUI;
 
 		void saveSettings(QSettings * settings);
 		void loadSettings(QSettings * settings);
@@ -46,4 +46,9 @@ class ofApp : public ofBaseApp{
 		QSettings * settings;
 //		QMainWindow * window;
 		MainWindow * w;
+
+		ofParameterGroup parameters;
+		ofParameter<float> radius;
+		ofParameter<ofColor> color;
+		ofxPanel OfGUI;
 };

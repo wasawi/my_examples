@@ -1,11 +1,7 @@
 #include "ofAppQtWindow.h"
-#include "ofBaseApp.h"
-#include "ofMain.h"
-
-// glut works with static callbacks UGH, so we need static variables here:
 
 //----------------------------------------------------------
-ofAppQtWindow::ofAppQtWindow() {
+ofAppQtWindow::ofAppQtWindow(QApplication * qtApp) {
 	bEnableSetupScreen = true;
 	buttonPressed = false;
 	bWindowNeedsShowing = true;
@@ -19,6 +15,17 @@ ofAppQtWindow::ofAppQtWindow() {
 	windowH = 0;
 	currentW = 0;
 	currentH = 0;
+
+	// if not created in main.cpp create Qt app 
+	if (qtApp == 0) {
+		int argc = 1;
+		char *argv = "openframeworks";
+		char **vptr = &argv;
+		qtAppPtr = new QApplication(argc, vptr);
+	}
+	else {
+		qtAppPtr = qtApp;
+	}
 
 	ofAppPtr = nullptr;
 	windowPtr = nullptr;
@@ -57,13 +64,6 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 
 
 	//////////////////////////////////////
-	// create Qt app
-	//////////////////////////////////////
-	int argc = 1;
-	char *argv = "openframeworks";
-	char **vptr = &argv;
-	qtAppPtr = new QApplication(argc, vptr);
-	//////////////////////////////////////
 	// setup OpenGL
 	//////////////////////////////////////
 	QSurfaceFormat format;
@@ -95,8 +95,6 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 	// create Qt window
 	//////////////////////////////////////
 //	windowPtr = new QWidget();
-//	windowPtr = new QtGLWidget(ofAppPtr);
-//	windowPtr = new QtWindow(ofAppPtr);
 	windowPtr = new QtGLWidget(this);
 	windowPtr->resize(settings.width, settings.height);
 //	currentW = windowPtr->size().width();
@@ -172,7 +170,7 @@ void ofAppQtWindow::update() {
 	events().notifyUpdate();
 
 	//////////////////////////////////////
-	// process all Qt events
+	// process Qt events
 	//////////////////////////////////////
 	windowPtr->update();
 	//////////////////////////////////////
@@ -204,6 +202,9 @@ void ofAppQtWindow::draw() {
 		}
 		else {
 			if ((events().getFrameNum() < 3 || nFramesSinceWindowResized < 3) && settings.doubleBuffering) {
+				//////////////////////////////////////
+				// process Qt events
+				//////////////////////////////////////
 //				windowPtr->swapBuffers();
 				qtAppPtr->processEvents();
 			}
@@ -214,6 +215,9 @@ void ofAppQtWindow::draw() {
 	}
 	else {
 		if (settings.doubleBuffering) {
+			//////////////////////////////////////
+			// process Qt events
+			//////////////////////////////////////
 //			windowPtr->swapBuffers();
 			qtAppPtr->processEvents();
 		}
@@ -245,7 +249,6 @@ void ofAppQtWindow::draw() {
 //------------------------------------------------------------
 ofCoreEvents & ofAppQtWindow::events() {
 	return coreEvents;
-//	return windowPtr->events();
 }
 
 //------------------------------------------------------------
@@ -253,16 +256,13 @@ shared_ptr<ofBaseRenderer> & ofAppQtWindow::renderer() {
 	return currentRenderer;
 }
 
-//------------------------------------------------------------
-void ofAppQtWindow::setAppPtr(shared_ptr<ofApp> appPtr){
-	ofAppPtr = appPtr;
-}
+////------------------------------------------------------------
+//void ofAppQtWindow::setAppPtr(shared_ptr<ofApp> appPtr){
+//	ofAppPtr = appPtr;
+//}
 
 //------------------------------------------------------------
 void ofAppQtWindow::setStatusMessage(string s) {
-
-//	window->statusBar()->showMessage(QString(s.c_str()), 2000);
-
 }
 
 //------------------------------------------------------------
@@ -285,8 +285,6 @@ void ofAppQtWindow::setWindowTitle(string title) {
 glm::vec2 ofAppQtWindow::getWindowSize() {
 	int width = windowPtr->width();
 	int height = windowPtr->height();
-//	int width = windowPtr->getGlWidth();
-//	int height = windowPtr->getGlHeight();
 
 	return glm::vec2(width, height);
 }

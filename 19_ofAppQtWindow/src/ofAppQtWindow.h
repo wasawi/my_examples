@@ -4,10 +4,6 @@
 #include "ofAppBaseWindow.h"
 
 #include <QApplication>
-//#include <QWindow>
-//#include <QWidget>
-
-//#include "QtWindow.h"
 #include "QtGLWidget.h"
 
 class ofBaseApp;
@@ -52,7 +48,7 @@ class ofAppQtWindow : public ofAppBaseGLWindow{
 
 public:
 
-	ofAppQtWindow();
+	ofAppQtWindow(QApplication * qtApp = 0);
 	~ofAppQtWindow();
 
 	// Can't be copied, use shared_ptr
@@ -131,7 +127,7 @@ public:
 //	void iconify(bool bIconify);
 
 	///----- from GLUT example
-	void setAppPtr(shared_ptr<ofApp> appPtr);
+//	void setAppPtr(shared_ptr<ofApp> appPtr);
 	static void exitApp();
 
 //	int			getFrameNum();
@@ -161,13 +157,10 @@ public:
 	int				pixelScreenCoordScale;
 
 	// Of App Ptr
-	shared_ptr<ofApp>			ofAppPtr;
+	shared_ptr<ofBaseApp>		ofAppPtr;
 	// Qt Stuff
 	QApplication *				qtAppPtr;
-//	QWindow*					windowPtr;
-//	QWidget*					windowPtr;
 	QtGLWidget*					windowPtr;
-//	QtWindow*					windowPtr;
 
 	void setStatusMessage(string s);
 

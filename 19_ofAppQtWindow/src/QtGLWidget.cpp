@@ -62,23 +62,6 @@ static void rotateMouseXY(ofOrientation orientation, int w, int h, double &x, do
 	}
 }
 
-//ofCoreEvents & QtGLWidget::getEvents()
-//{
-////	return windowPtr->events();
-//	// TODO: insert return statement here
-//}
-
-////------------------------------------------------------------
-//ofAppQtWindow * ofAppQtWindow::setCurrent(QOpenGLWidget* windowP) {
-//	ofAppQtWindow * instance = static_cast<ofAppQtWindow *>(windowP);
-//	shared_ptr<ofMainLoop> mainLoop = ofGetMainLoop();
-//	if (mainLoop) {
-//		mainLoop->setCurrentWindow(instance);
-//	}
-//	instance->makeCurrent();
-//	return instance;
-//}
-
 //void QtGLWidget::actionEvent(QActionEvent * event)
 //{
 //}

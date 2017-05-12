@@ -11,7 +11,7 @@ void ofApp::setup(){
 	w->show();
 
 
-    sliderInt = 100;
+    radius = 100;
 	color = ofColor::blue;
 
 	// POPULATE TABLE WITH VECTOR OF STRINGS
@@ -35,14 +35,27 @@ void ofApp::setup(){
         }
     }
 	
-	cursor = ofPoint(ofGetWindowWidth() / 2 - sliderInt / 2, ofGetWindowHeight() / 2 - sliderInt / 2);
+	cursor = ofPoint(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2);
 	key_str = "";
+}
+
+//--------------------------------------------------------------
+void ofApp::setupGui() {
+	parameters.setName("parameters");
+	parameters.add(radius.set("radius", 50, 1, 100));
+	parameters.add(color.set("color", 100, ofColor(0, 0), 255));
+	OfGUI.setup(parameters);
+	ofSetBackgroundColor(0);
+}
+//--------------------------------------------------------------
+void ofApp::drawGui(ofEventArgs & args) {
+	OfGUI.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     double xvalue=ui->Slider->value();
-    sliderInt = int(xvalue);
+    radius = int(xvalue);
 
 	if (ui->pushButton->isDown() == true) {
 		color = ofColor::red;
@@ -65,18 +78,18 @@ void ofApp::draw(){
 
     ofPushStyle();
     ofSetColor(ofColor::ghostWhite);
-    ofDrawBitmapStringHighlight("value from slider: " + ofToString(sliderInt), 20, 20);
+    ofDrawBitmapStringHighlight("value from slider: " + ofToString(radius), 20, 20);
 	ofDrawBitmapString("value from keys: " + key_str, 20, 40);
 	key_str = "";
     ofPopStyle();
 
 	//ofSetColor(color);
-//    ofEllipse(ofGetWidth()/2, ofGetHeight()/2, sliderInt*2, sliderInt*2);
+//    ofEllipse(ofGetWidth()/2, ofGetHeight()/2, radius*2, radius*2);
 	ofSetColor(ofColor::black);
-	ofRect(ofGetWindowWidth()/2- sliderInt/2, ofGetWindowHeight()/2 - sliderInt / 2, sliderInt, sliderInt);
+	ofRect(ofGetWindowWidth()/2- radius/2, ofGetWindowHeight()/2 - radius / 2, radius, radius);
 	ofSetColor(ofColor::yellow);
 //	ofSetCircleResolution(20);
-	ofCircle(cursor.x, cursor.y, sliderInt / 2);
+	ofCircle(cursor.x, cursor.y, radius / 2);
 
 }
 

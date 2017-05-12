@@ -3,17 +3,11 @@
 #include "ofBaseApp.h"
 #include "ofApp.h"
 #include "ofAppQtWindow.h"
-
+//
 #include <QOpenGLFunctions>
 #include <QOpenGLWidget>
-#include <QGLWidget>
-#include <QTime>
-#include <QTabWidget>
-#include <QGridlayout>
-#include <QComboBox>
 
-	extern void qt_set_sequence_auto_mnemonic(bool b);
-
+extern void qt_set_sequence_auto_mnemonic(bool b);
 class ofAppQtWindow;
 
 class QtGLWidget : public QOpenGLWidget, protected QOpenGLFunctions
