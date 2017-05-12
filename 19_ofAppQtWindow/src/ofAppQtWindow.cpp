@@ -6,43 +6,47 @@
 
 //----------------------------------------------------------
 ofAppQtWindow::ofAppQtWindow() {
-	timeNow = 0;
-	timeThen = 0;
-	fps = 60; //give a realistic starting value - win32 issues
-	windowMode = OF_WINDOW;
-	bNewScreenMode = true;
-	nFramesForFPS = 0;
-	nFrameCount = 0;
-	buttonInUse = 0;
 	bEnableSetupScreen = true;
-	bFrameRateSet = false;
-	millisForFrame = 0;
-	prevMillis = 0;
-	diffMillis = 0;
-	requestedWidth = 0;
-	requestedHeight = 0;
-	nonFullScreenX = -1;
-	nonFullScreenY = -1;
-	mouseX = 0;
-	mouseY = 0;
-
-
-	ofAppPtr = nullptr;
-	window = nullptr;
+	buttonPressed = false;
+	bWindowNeedsShowing = true;
+	buttonInUse = 0;
+	iconSet = false;
+	orientation = OF_ORIENTATION_DEFAULT;
+	windowMode = OF_WINDOW;
+	pixelScreenCoordScale = 1;
+	nFramesSinceWindowResized = 0;
 	windowW = 0;
 	windowH = 0;
 	currentW = 0;
 	currentH = 0;
+
+	ofAppPtr = nullptr;
+	windowPtr = nullptr;
 }
 
 //----------------------------------------------------------
 ofAppQtWindow::~ofAppQtWindow() {
-
+	close();
 }
 
 //------------------------------------------------------------
-void ofAppQtWindow::setup(const ofGLWindowSettings & _settings) {
-	if (window) {
+#ifdef TARGET_OPENGLES
+void ofAppGLFWWindow::setup(const ofGLESWindowSettings & settings) {
+#else
+void ofAppQtWindow::setup(const ofGLWindowSettings & settings) {
+#endif
+	const ofQtGLWindowSettings * glSettings = dynamic_cast<const ofQtGLWindowSettings*>(&settings);
+	if (glSettings) {
+		setup(*glSettings);
+	}
+	else {
+		setup(ofQtGLWindowSettings(settings));
+	}
+}
+
+//------------------------------------------------------------
+void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
+	if (windowPtr) {
 		ofLogError() << "window already setup, probably you are mixing old and new style setup";
 		ofLogError() << "call only ofCreateWindow(settings) or ofSetupOpenGL(...)";
 		ofLogError() << "calling window->setup() after ofCreateWindow() is not necesary and won't do anything";
@@ -50,22 +54,133 @@ void ofAppQtWindow::setup(const ofGLWindowSettings & _settings) {
 	}
 	settings = _settings;
 
+
+	//////////////////////////////////////
+	// create Qt app
+	//////////////////////////////////////
 	int argc = 1;
 	char *argv = "openframeworks";
 	char **vptr = &argv;
-	qtApp = new QApplication(argc, vptr);
+	qtAppPtr = new QApplication(argc, vptr);
+	//////////////////////////////////////
+	// setup OpenGL
+	//////////////////////////////////////
+	QSurfaceFormat format;
+	format.setVersion(settings.glVersionMajor, settings.glVersionMinor);
+	format.setProfile(QSurfaceFormat::CoreProfile);
+	format.setAlphaBufferSize(settings.alphaBits);
+	format.setDepthBufferSize(settings.depthBits);
+	format.setStencilBufferSize(settings.stencilBits);
+	format.setStereo(settings.stereo);
+	if (settings.doubleBuffering) {
+		format.setSwapBehavior(QSurfaceFormat::DoubleBuffer);
+	}
+	else {
+		format.setSwapBehavior(QSurfaceFormat::SingleBuffer);
+	}
+	QSurfaceFormat::setDefaultFormat(format);
 
-	currentRenderer = shared_ptr<ofBaseRenderer>(new ofGLRenderer(this));
+	//////////////////////////////////////
+	// create renderer
+	//////////////////////////////////////
+	if (settings.glVersionMajor >= 3) {
+		currentRenderer = shared_ptr<ofBaseRenderer>(new ofGLProgrammableRenderer(this));
+	}
+	else {
+		currentRenderer = shared_ptr<ofBaseRenderer>(new ofGLRenderer(this));
+	}
+
+	//////////////////////////////////////
+	// create Qt window
+	//////////////////////////////////////
+//	windowPtr = new QWidget();
+//	windowPtr = new QtGLWidget(ofAppPtr);
+//	windowPtr = new QtWindow(ofAppPtr);
+	windowPtr = new QtGLWidget(this);
+	windowPtr->resize(settings.width, settings.height);
+//	currentW = windowPtr->size().width();
+//	currentH = windowPtr->size().height();
+	windowW = settings.width;
+	windowH = settings.height;
+//	windowPtr->setFixedHeight(windowH);
+//	windowPtr->setFormat(format);
+
+	//don't try and show a window if its been requsted to be hidden
+	bWindowNeedsShowing = settings.visible;
+	windowPtr->makeCurrent();
+	windowPtr->show();
+
+//	int framebufferW, framebufferH;
+//	glfwGetFramebufferSize(windowPtr, &framebufferW, &framebufferH);
+
+	//this lets us detect if the window is running in a retina mode
+	//if (framebufferW != windowW) {
+	//	pixelScreenCoordScale = framebufferW / windowW;
+
+	//	auto position = getWindowPosition();
+	//	setWindowShape(windowW, windowH);
+	//	setWindowPosition(position.x, position.y);
+	//}
+
+
+#ifndef TARGET_OPENGLES
+	static bool inited = false;
+	if (!inited) {
+		glewExperimental = GL_TRUE;
+		GLenum err = glewInit();
+		if (GLEW_OK != err)
+		{
+			/* Problem: glewInit failed, something is seriously wrong. */
+			ofLogError("ofAppRunner") << "couldn't init GLEW: " << glewGetErrorString(err);
+			return;
+		}
+		inited = true;
+	}
+#endif
+
+	ofLogVerbose() << "GL Version:" << glGetString(GL_VERSION);
+
+	//////////////////////////////////////
+	// setup renderer
+	//////////////////////////////////////
+	if (currentRenderer->getType() == ofGLProgrammableRenderer::TYPE) {
+#ifndef TARGET_OPENGLES
+		static_cast<ofGLProgrammableRenderer*>(currentRenderer.get())->setup(settings.glVersionMajor, settings.glVersionMinor);
+#else
+		static_cast<ofGLProgrammableRenderer*>(currentRenderer.get())->setup(settings.glesVersion, 0);
+#endif
+	}
+	else {
+		static_cast<ofGLRenderer*>(currentRenderer.get())->setup();
+	}
+
+
+	//////////////////////////////////////
+	// notes
+	//////////////////////////////////////
+	// this call goes to an endless loop 
+	// which causes no OF calls
+//	qtAppPtr->exec();
+	// we will use 
+//	qtAppPtr->processEvents();
+	// so that we can call qt inside the OF loop
 }
 //------------------------------------------------------------
 void ofAppQtWindow::update() {
-	cout << "update" << endl;
+//	cout << "update" << endl;
+
+	//////////////////////////////////////
+	// process all Qt events
+	//////////////////////////////////////
+	windowPtr->update();
+	//////////////////////////////////////
+
 	events().notifyUpdate();
 
 	//show the window right before the first draw call.
-	if (window) {
-//		glfwShowWindow(window);
-//		bWindowNeedsShowing = false;
+	if (bWindowNeedsShowing && windowPtr) {
+//		windowPtr->show();
+		bWindowNeedsShowing = false;
 		if (settings.windowMode == OF_FULLSCREEN) {
 			setFullscreen(true);
 		}
@@ -73,67 +188,77 @@ void ofAppQtWindow::update() {
 }
 //------------------------------------------------------------
 void ofAppQtWindow::draw() {
-	cout << "draw" << endl;
-}
+//	cout << "draw" << endl;
+	currentRenderer->startRender();
 
-//------------------------------------------------------------
-void ofAppQtWindow::initializeWindow() {
+	if (bEnableSetupScreen) currentRenderer->setupScreen();
 
+	events().notifyDraw();
 
-	//----------------------
-	// setup the callbacks
-
-	/*glutMouseFunc(mouse_cb);
-	glutMotionFunc(motion_cb);
-	glutPassiveMotionFunc(passive_motion_cb);
-	glutIdleFunc(idle_cb);
-	glutDisplayFunc(display);
-
-	glutKeyboardFunc(keyboard_cb);
-	glutKeyboardUpFunc(keyboard_up_cb);
-	glutSpecialFunc(special_key_cb);
-	glutSpecialUpFunc(special_key_up_cb);
-
-	glutReshapeFunc(resize_cb);
-	*/
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::run(shared_ptr<ofApp> appPtr) {
-	static ofEventArgs voidEventArgs;
-
-//	ofAppPtr = static_cast<ofApp*>(appPtr);
-
-	window = new Window(appPtr);
-
-	if (ofAppPtr) {
-//		ofAppPtr->setup(window, window->viewCombo);
-		ofAppPtr->setup();
-		ofAppPtr->update();
+#ifdef TARGET_WIN32
+	if (currentRenderer->getBackgroundAuto() == false) {
+		// on a PC resizing a window with this method of accumulation (essentially single buffering)
+		// is BAD, so we clear on resize events.
+		if (nFramesSinceWindowResized < 3) {
+			currentRenderer->clear();
+		}
+		else {
+			if ((events().getFrameNum() < 3 || nFramesSinceWindowResized < 3) && settings.doubleBuffering) {
+//				windowPtr->swapBuffers();
+				qtAppPtr->processEvents();
+			}
+			else {
+				glFlush();
+			}
+		}
 	}
-	window->loadSettings();
-
-	window->show();
-	//	window->glWidget->appSet = true;
-
-	ofSetDataPathRoot("../../../data/");
-
-
-#ifdef OF_USING_POCO
-	ofNotifyEvent(ofEvents.setup, voidEventArgs);
-	ofNotifyEvent(ofEvents.update, voidEventArgs);
+	else {
+		if (settings.doubleBuffering) {
+//			windowPtr->swapBuffers();
+			qtAppPtr->processEvents();
+		}
+		else {
+			glFlush();
+		}
+	}
+#else
+	if (currentRenderer->getBackgroundAuto() == false) {
+		// in accum mode resizing a window is BAD, so we clear on resize events.
+		if (nFramesSinceWindowResized < 3) {
+			currentRenderer->clear();
+		}
+	}
+	if (settings.doubleBuffering) {
+		glfwSwapBuffers(windowP);
+	}
+	else {
+		glFlush();
+	}
 #endif
+	
 
-	qtApp->exec();
+	currentRenderer->finishRender();
 
-
-
-
-
-	/*	glutMainLoop();*/
+	nFramesSinceWindowResized++;
 }
 
+//------------------------------------------------------------
+ofCoreEvents & ofAppQtWindow::events() {
+	return coreEvents;
+//	return windowPtr->events();
+}
 
+//------------------------------------------------------------
+shared_ptr<ofBaseRenderer> & ofAppQtWindow::renderer() {
+	return currentRenderer;
+}
+
+//------------------------------------------------------------
+void ofAppQtWindow::setAppPtr(shared_ptr<ofApp> appPtr){
+	ofAppPtr = appPtr;
+}
+
+//------------------------------------------------------------
 void ofAppQtWindow::setStatusMessage(string s) {
 
 //	window->statusBar()->showMessage(QString(s.c_str()), 2000);
@@ -142,76 +267,83 @@ void ofAppQtWindow::setStatusMessage(string s) {
 
 //------------------------------------------------------------
 void ofAppQtWindow::exitApp() {
-
-	//  -- This already exists in ofExitCallback
-
-	//	static ofEventArgs voidEventArgs;
-	//
-	//	if(ofAppPtr)ofAppPtr->exit();
-	//
-	//	#ifdef OF_USING_POCO
-	//		ofNotifyEvent( ofEvents.exit, voidEventArgs );
-	//	#endif
-
-	ofLog(OF_LOG_VERBOSE, "GLUT OF app is being terminated!");
-
+	ofLog(OF_LOG_VERBOSE, "QT OF app is being terminated!");
 	OF_EXIT_APP(0);
 }
 
-//------------------------------------------------------------
-float ofAppQtWindow::getFrameRate() {
-	return window->getGlFrameRate();
-}
-
-//------------------------------------------------------------
-int ofAppQtWindow::getFrameNum() {
-	return nFrameCount;
-}
+////------------------------------------------------------------
+//float ofAppQtWindow::getFrameRate() {
+//	return windowPtr->getGlFrameRate();
+//}
 
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowTitle(string title) {
-//	glutSetWindowTitle(title.c_str());
+	windowPtr->setWindowTitle(QString(title.c_str()));
 }
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getWindowSize() {
-	//	int width = glutGet(GLUT_WINDOW_WIDTH);
-	//	int height = glutGet(GLUT_WINDOW_HEIGHT);
-	int width = window->getGlWidth();
-	int height = window->getGlHeight();
+	int width = windowPtr->width();
+	int height = windowPtr->height();
+//	int width = windowPtr->getGlWidth();
+//	int height = windowPtr->getGlHeight();
+
 	return glm::vec2(width, height);
 }
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getWindowPosition() {
-	//int x = glutGet(GLUT_WINDOW_X);
-	//int y = glutGet(GLUT_WINDOW_Y);
-	return glm::vec2(getWindowPosition());
+	int x = windowPtr->pos().x();
+	int y = windowPtr->pos().y();
+
+	return glm::vec2{ x, y };
 }
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getScreenSize() {
-	//int width = glutGet(GLUT_SCREEN_WIDTH);
-	//int height = glutGet(GLUT_SCREEN_HEIGHT);
-	return glm::vec2(getScreenSize());
+	int width = windowPtr->size().width();
+	int height = windowPtr->size().height();
+
+	return glm::vec2{ width, height };
 }
 
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowPosition(int x, int y) {
-	setWindowPosition(x, y);
+	windowPtr->move(QPoint{ x, y });
 }
 
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowShape(int w, int h) {
-	setWindowShape(w, h);
-	// this is useful, esp if we are in the first frame (setup):
-	requestedWidth = w;
-	requestedHeight = h;
+	cout << "setWindowShape" << endl;
+
+	if (windowMode == OF_WINDOW) {
+		windowW = w;
+		windowH = h;
+	}
+	currentW = w / pixelScreenCoordScale;
+	currentH = h / pixelScreenCoordScale;
+
+#ifdef TARGET_OSX
+	auto pos = getWindowPosition();
+	windowP->resize(currentW, currentH);
+	if (pos != getWindowPosition()) {
+		setWindowPosition(pos.x, pos.y);
+	}
+#else
+	windowPtr->resize(currentW, currentH);
+#endif
+}
+
+void ofAppQtWindow::close()
+{
+	windowPtr = nullptr;
+	events().disable();
+	bWindowNeedsShowing = true;
 }
 
 //------------------------------------------------------------
 void ofAppQtWindow::hideCursor() {
-	hideCursor();
+	windowPtr->unsetCursor();
 }
 
 //------------------------------------------------------------
@@ -220,56 +352,8 @@ void ofAppQtWindow::showCursor() {
 }
 
 //------------------------------------------------------------
-void ofAppQtWindow::setFrameRate(float targetRate) {
-	// given this FPS, what is the amount of millis per frame
-	// that should elapse?
-
-	// --- > f / s
-
-	if (targetRate == 0) {
-		bFrameRateSet = false;
-		return;
-	}
-
-	bFrameRateSet = true;
-	float durationOfFrame = 1.0f / (float)targetRate;
-	millisForFrame = (int)(1000.0f * durationOfFrame);
-
-	//frameRate				= targetRate;
-
-}
-
-//------------------------------------------------------------
 ofWindowMode ofAppQtWindow::getWindowMode() {
 	return windowMode;
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::toggleFullscreen() {
-	if (windowMode == OF_GAME_MODE)return;
-
-	if (windowMode == OF_WINDOW) {
-		windowMode = OF_FULLSCREEN;
-	}
-	else {
-		windowMode = OF_WINDOW;
-	}
-
-	bNewScreenMode = true;
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::setFullscreen(bool fullscreen) {
-	if (windowMode == OF_GAME_MODE)return;
-
-	if (fullscreen && windowMode != OF_FULLSCREEN) {
-		bNewScreenMode = true;
-		windowMode = OF_FULLSCREEN;
-	}
-	else if (!fullscreen && windowMode != OF_WINDOW) {
-		bNewScreenMode = true;
-		windowMode = OF_WINDOW;
-	}
 }
 
 //------------------------------------------------------------
@@ -282,293 +366,26 @@ void ofAppQtWindow::disableSetupScreen() {
 	bEnableSetupScreen = false;
 }
 
-//------------------------------------------------------------
-/*void ofAppQtWindow::display(void){
-static ofEventArgs voidEventArgs;
-
-//--------------------------------
-// when I had "glutFullScreen()"
-// in the initOpenGl, I was gettings a "heap" allocation error
-// when debugging via visual studio.  putting it here, changes that.
-// maybe it's voodoo, or I am getting rid of the problem
-// by removing something unrelated, but everything seems
-// to work if I put fullscreen on the first frame of display.
-
-if (windowMode != OF_GAME_MODE){
-if ( bNewScreenMode ){
-if( windowMode == OF_FULLSCREEN){
-
-//----------------------------------------------------
-// before we go fullscreen, take a snapshot of where we are:
-nonFullScreenX = glutGet(GLUT_WINDOW_X);
-nonFullScreenY = glutGet(GLUT_WINDOW_Y);
-//----------------------------------------------------
-
-glutFullScreen();
-
-#ifdef TARGET_OSX
-SetSystemUIMode(kUIModeAllHidden,NULL);
-#endif
-
-}else if( windowMode == OF_WINDOW ){
-
-glutReshapeWindow(requestedWidth, requestedHeight);
-
-//----------------------------------------------------
-// if we have recorded the screen posion, put it there
-// if not, better to let the system do it (and put it where it wants)
-if (nFrameCount > 0){
-glutPositionWindow(nonFullScreenX,nonFullScreenY);
-}
-//----------------------------------------------------
-
-#ifdef TARGET_OSX
-SetSystemUIMode(kUIModeNormal,NULL);
-#endif
-}
-bNewScreenMode = false;
-}
+void ofAppQtWindow::makeCurrent()
+{
+	// used
+	windowPtr->makeCurrent();
 }
 
-int width, height;
-
-width  = ofGetWidth();
-height = ofGetHeight();
-
-height = height > 0 ? height : 1;
-// set viewport, clear the screen
-glViewport( 0, 0, width, height );
-float * bgPtr = ofBgColorPtr();
-bool bClearAuto = ofbClearBg();
-
-// I don't know why, I need more than one frame at the start in fullscreen mode
-// also, in non-fullscreen mode, windows/intel graphics, this bClearAuto just fails.
-// I seem to have 2 buffers, alot of flickering
-// and don't accumulate the way I expect.
-// with this line:   if ((bClearAuto == true) || nFrameCount < 3){
-// we do nFrameCount < 3, so that the buffers are cleared at the start of the app
-// or else we have video memory garbage to draw on to...
-
-#ifdef TARGET_WIN32
-//windows doesn't get accumulation in window mode
-if ((bClearAuto == true || windowMode == OF_WINDOW) || nFrameCount < 3){
-#else
-//mac and linux does :)
-if ( bClearAuto == true || nFrameCount < 3){
-#endif
-glClearColor(bgPtr[0],bgPtr[1],bgPtr[2], bgPtr[3]);
-glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+void ofAppQtWindow::swapBuffers()
+{
+	//unused
+//	windowPtr->swapBuffers();
 }
 
-if( bEnableSetupScreen )ofSetupScreen();
-
-if(ofAppPtr)
-ofAppPtr->draw();
-
-#ifdef OF_USING_POCO
-ofNotifyEvent( ofEvents.draw, voidEventArgs );
-#endif
-
-glutSwapBuffers();
-
-// -------------- fps calculation:
-timeNow = ofGetElapsedTimef();
-if( (timeNow-timeThen) > 0.05f || nFramesForFPS == 0 ) {
-fps = (double)nFramesForFPS / (timeNow-timeThen);
-timeThen = timeNow;
-nFramesForFPS = 0;
-
-//hack for windows - was getting NAN - maybe unitialized vars???
-if( nFrameCount < 5) frameRate = fps;
-else frameRate = 0.9f * frameRate + 0.1f * fps;
-}
-nFramesForFPS++;
-// --------------
-
-nFrameCount++;		// increase the overall frame count
-
-//setFrameNum(nFrameCount); // get this info to ofUtils for people to access
-
+void ofAppQtWindow::startRender()
+{
+	//unused
+//	renderer()->startRender();
 }
 
-//------------------------------------------------------------
-void ofAppQtWindow::mouse_cb(int button, int state, int x, int y) {
-static ofMouseEventArgs mouseEventArgs;
-
-if (nFrameCount > 0){
-if(ofAppPtr){
-ofAppPtr->mouseX = x;
-ofAppPtr->mouseY = y;
+void ofAppQtWindow::finishRender()
+{
+	//unused
+//	renderer()->finishRender();
 }
-
-if (state == GLUT_DOWN) {
-if(ofAppPtr)
-ofAppPtr->mousePressed(x,y,button);
-
-#ifdef OF_USING_POCO
-mouseEventArgs.x = x;
-mouseEventArgs.y = y;
-mouseEventArgs.button = button;
-ofNotifyEvent( ofEvents.mousePressed, mouseEventArgs );
-#endif
-} else if (state == GLUT_UP) {
-if(ofAppPtr){
-ofAppPtr->mouseReleased(x,y,button);
-ofAppPtr->mouseReleased();
-}
-
-#ifdef OF_USING_POCO
-mouseEventArgs.x = x;
-mouseEventArgs.y = y;
-mouseEventArgs.button = button;
-ofNotifyEvent( ofEvents.mouseReleased, mouseEventArgs );
-#endif
-}
-buttonInUse = button;
-}
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::motion_cb(int x, int y) {
-static ofMouseEventArgs mouseEventArgs;
-
-if (nFrameCount > 0){
-if(ofAppPtr){
-ofAppPtr->mouseX = x;
-ofAppPtr->mouseY = y;
-ofAppPtr->mouseDragged(x,y,buttonInUse);
-}
-
-#ifdef OF_USING_POCO
-mouseEventArgs.x = x;
-mouseEventArgs.y = y;
-mouseEventArgs.button = buttonInUse;
-ofNotifyEvent( ofEvents.mouseDragged, mouseEventArgs );
-#endif
-}
-
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::passive_motion_cb(int x, int y) {
-static ofMouseEventArgs mouseEventArgs;
-
-if (nFrameCount > 0){
-if(ofAppPtr){
-ofAppPtr->mouseX = x;
-ofAppPtr->mouseY = y;
-ofAppPtr->mouseMoved(x,y);
-}
-
-#ifdef OF_USING_POCO
-mouseEventArgs.x = x;
-mouseEventArgs.y = y;
-ofNotifyEvent( ofEvents.mouseMoved, mouseEventArgs );
-#endif
-}
-}
-
-
-//------------------------------------------------------------
-void ofAppQtWindow::idle_cb(void) {
-static ofEventArgs voidEventArgs;
-
-//	thanks to jorge for the fix:
-//	http://www.openframeworks.cc/forum/viewtopic.php?t=515&highlight=frame+rate
-
-if (nFrameCount != 0 && bFrameRateSet == true){
-diffMillis = ofGetElapsedTimeMillis() - prevMillis;
-if (diffMillis > millisForFrame){
-; // we do nothing, we are already slower than target frame
-} else {
-int waitMillis = millisForFrame - diffMillis;
-#ifdef TARGET_WIN32
-Sleep(waitMillis);         //windows sleep in milliseconds
-#else
-usleep(waitMillis * 1000);   //mac sleep in microseconds - cooler :)
-#endif
-}
-}
-prevMillis = ofGetElapsedTimeMillis(); // you have to measure here
-
-if(ofAppPtr)
-ofAppPtr->update();
-
-#ifdef OF_USING_POCO
-ofNotifyEvent( ofEvents.update, voidEventArgs);
-#endif
-
-glutPostRedisplay();
-}
-
-
-//------------------------------------------------------------
-void ofAppQtWindow::keyboard_cb(unsigned char key, int x, int y) {
-static ofKeyEventArgs keyEventArgs;
-
-if(ofAppPtr)
-ofAppPtr->keyPressed(key);
-
-#ifdef OF_USING_POCO
-keyEventArgs.key = key;
-ofNotifyEvent( ofEvents.keyPressed, keyEventArgs );
-#endif
-
-if (key == OF_KEY_ESC){				// "escape"
-exitApp();
-}
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::keyboard_up_cb(unsigned char key, int x, int y) {
-static ofKeyEventArgs keyEventArgs;
-
-if(ofAppPtr)
-ofAppPtr->keyReleased(key);
-
-#ifdef OF_USING_POCO
-keyEventArgs.key = key;
-ofNotifyEvent( ofEvents.keyReleased, keyEventArgs );
-#endif
-}
-
-//------------------------------------------------------
-void ofAppQtWindow::special_key_cb(int key, int x, int y) {
-static ofKeyEventArgs keyEventArgs;
-
-if(ofAppPtr)
-ofAppPtr->keyPressed(key | OF_KEY_MODIFIER);
-
-#ifdef OF_USING_POCO
-keyEventArgs.key = (key | OF_KEY_MODIFIER);
-ofNotifyEvent( ofEvents.keyPressed, keyEventArgs );
-#endif
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::special_key_up_cb(int key, int x, int y) {
-static ofKeyEventArgs keyEventArgs;
-
-if(ofAppPtr)
-ofAppPtr->keyReleased(key | OF_KEY_MODIFIER);
-
-#ifdef OF_USING_POCO
-keyEventArgs.key = (key | OF_KEY_MODIFIER);
-ofNotifyEvent( ofEvents.keyReleased, keyEventArgs );
-#endif
-}
-
-//------------------------------------------------------------
-void ofAppQtWindow::resize_cb(int w, int h) {
-static ofResizeEventArgs resizeEventArgs;
-
-if(ofAppPtr)
-ofAppPtr->windowResized(w,h);
-
-#ifdef OF_USING_POCO
-resizeEventArgs.width = w;
-resizeEventArgs.height = h;
-ofNotifyEvent( ofEvents.windowResized, resizeEventArgs );
-#endif
-}
-*/

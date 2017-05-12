@@ -3,9 +3,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-	
-    circleRadius = 50;
-	color = ofColor::white;
+	ofLogLevel(OF_LOG_VERBOSE);
+	ofLogToConsole();
+
+	w = new MainWindow();
+	ui = w->ui;
+	w->show();
+
+
+    sliderInt = 50;
+	color = ofColor::blue;
 
 	// POPULATE TABLE WITH VECTOR OF STRINGS
     vector<string> my_strings;
@@ -28,53 +35,59 @@ void ofApp::setup(){
         }
     }
 	
+	cursor = ofPoint(ofGetWindowWidth() / 2 - sliderInt / 2, ofGetWindowHeight() / 2 - sliderInt / 2);
+	key_str = "";
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     double xvalue=ui->Slider->value();
-    circleRadius = int(xvalue);
+    sliderInt = int(xvalue);
 
 	if (ui->pushButton->isDown() == true) {
 		color = ofColor::red;
+		ofSetWindowPosition(ofGetWindowPositionX() + 10, ofGetWindowPositionY() + 10);
+		ofSetWindowShape(500, 500);
 	}
 	else {
 		color = ofColor::white;
 	}
+
+//	cout << ofGetWindowPositionX() << endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	
+	ofBackground(color);
+
+	ofEnableAntiAliasing();
+	ofEnableAlphaBlending();
+
     ofPushStyle();
-    ofSetColor(255);
-    ofDrawBitmapString("value from slider: " + ofToString(circleRadius), 20, 20);
+    ofSetColor(ofColor::ghostWhite);
+    ofDrawBitmapStringHighlight("value from slider: " + ofToString(sliderInt), 20, 20);
+	ofDrawBitmapString("value from keys: " + key_str, 20, 40);
+	key_str = "";
     ofPopStyle();
 
-	ofSetColor(color);
-    ofEllipse(ofGetWidth()/2, ofGetHeight()/2, circleRadius*2, circleRadius*2);
-	
-}
-
-void ofApp::draw(int drawPlugin) {
-
-	ofBackground(color);
-//	controller->draw(drawPlugin);
-
-//	ofSetColor(color);
-//	ofEllipse(ofGetWidth() / 2, ofGetHeight() / 2, circleRadius * 2, circleRadius * 2);
-
-//	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(), 0), 15, 30);
+	//ofSetColor(color);
+//    ofEllipse(ofGetWidth()/2, ofGetHeight()/2, sliderInt*2, sliderInt*2);
+	ofSetColor(ofColor::black);
+	ofRect(ofGetWindowWidth()/2- sliderInt/2, ofGetWindowHeight()/2 - sliderInt / 2, sliderInt, sliderInt);
+	ofSetColor(ofColor::yellow);
+//	ofSetCircleResolution(20);
+	ofCircle(cursor.x, cursor.y, sliderInt / 2);
 
 }
 
 //--------------------------------------------------------------
-void ofApp::keyPressed(int key){
-
+void ofApp::keyPressed(ofKeyEventArgs& key){
+	key_str = key.key;
+	cout << key.key <<endl;
 }
 
 //--------------------------------------------------------------
-void ofApp::keyReleased(int key){
+void ofApp::keyReleased(ofKeyEventArgs&  key){
 
 }
 
@@ -85,7 +98,7 @@ void ofApp::mouseMoved(int x, int y){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-
+	cursor = ofPoint(x, y);
 }
 
 //--------------------------------------------------------------
@@ -95,7 +108,7 @@ void ofApp::mousePressed(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-
+	cursor = ofPoint(x, y);
 }
 
 //--------------------------------------------------------------

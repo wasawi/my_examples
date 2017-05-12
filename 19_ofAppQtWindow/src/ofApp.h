@@ -4,6 +4,7 @@
 #include "GuiApp.h"
 
 #include "Controller.h"
+#include "mainwindow.h"
 #include <QSettings>
 
 namespace Ui {
@@ -17,8 +18,8 @@ class ofApp : public ofBaseApp{
         void draw();
 		void draw(int drawPlugin);
 
-        void keyPressed(int key);
-        void keyReleased(int key);
+        void keyPressed(ofKeyEventArgs& key);
+        void keyReleased(ofKeyEventArgs& key);
         void mouseMoved(int x, int y);
         void mouseDragged(int x, int y, int button);
         void mousePressed(int x, int y, int button);
@@ -29,9 +30,12 @@ class ofApp : public ofBaseApp{
         void dragEvent(ofDragInfo dragInfo);
         void gotMessage(ofMessage msg);
 
-        int circleRadius;
+        int sliderInt;
         Ui::MainWindow *ui;
+		
 		ofColor color;
+		ofPoint cursor;
+		string key_str;
 
 		shared_ptr<GuiApp> gui;
 
@@ -40,5 +44,6 @@ class ofApp : public ofBaseApp{
 
 		Controller * controller;
 		QSettings * settings;
-		QMainWindow * window;
+//		QMainWindow * window;
+		MainWindow * w;
 };

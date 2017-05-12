@@ -2,119 +2,174 @@
 
 #include "ofConstants.h"
 #include "ofAppBaseWindow.h"
+
 #include <QApplication>
-#include "window.h"
+//#include <QWindow>
+//#include <QWidget>
 
-//class ofPoint;
+//#include "QtWindow.h"
+#include "QtGLWidget.h"
+
 class ofBaseApp;
+class QtGLWidget;
 
-//ofAppBaseWindow
-//ofAppBaseGLWindow
-//ofAppGlutWindow
+#ifdef TARGET_OPENGLES
+class ofQtGLWindowSettings : public ofGLESWindowSettings{
+#else
+class ofQtGLWindowSettings : public ofGLWindowSettings{
+#endif
 
-class ofAppQtWindow : public ofAppBaseGLWindow {
-	
+public:
+	ofQtGLWindowSettings() {}
+
+#ifdef TARGET_OPENGLES
+	ofGLFWWindowSettings(const ofGLESWindowSettings & settings)
+		:ofGLESWindowSettings(settings) {}
+#else
+	ofQtGLWindowSettings(const ofGLWindowSettings & settings)
+		: ofGLWindowSettings(settings) {}
+#endif
+
+	int numSamples = 4;
+	bool doubleBuffering = true;
+	int redBits = 8;
+	int greenBits = 8;
+	int blueBits = 8;
+	int alphaBits = 8;
+	int depthBits = 24;
+	int stencilBits = 0;
+	bool stereo = false;
+	bool visible = true;
+	bool iconified = false;
+	bool decorated = true;
+	bool resizable = true;
+	int monitor = 0;
+	bool multiMonitorFullScreen = false;
+	shared_ptr<ofAppBaseWindow> shareContextWith;
+};
+
+class ofAppQtWindow : public ofAppBaseGLWindow{
+
 public:
 
 	ofAppQtWindow();
 	~ofAppQtWindow();
 
-	static bool doesLoop() { return true; }
-	static bool allowsMultiWindow() { return false; }
+	// Can't be copied, use shared_ptr
+	ofAppQtWindow(ofAppQtWindow & w) = delete;
+	ofAppQtWindow & operator=(ofAppQtWindow & w) = delete;
+
 	static void loop() {};
-	static bool needsPolling() { return false; }
-	static void pollEvents() {  }
+	static bool doesLoop() { return false; }
+	static bool allowsMultiWindow() { return true; }
+	static bool needsPolling() { return true; }
+	static void pollEvents() { glfwPollEvents(); }
 
 	using ofAppBaseWindow::setup;
+#ifdef TARGET_OPENGLES
+	void setup(const ofGLESWindowSettings & settings);
+#else
 	void setup(const ofGLWindowSettings & settings);
+#endif
+	void setup(const ofQtGLWindowSettings & settings);
 	void update();
 	void draw();
 
-	//bool getWindowShouldClose();
-	//void setWindowShouldClose();
+//	bool getWindowShouldClose();
+//	void setWindowShouldClose();
 
-	//void close();
-
-	ofCoreEvents & events() override { return coreEvents; };
-	shared_ptr<ofBaseRenderer> & renderer() override { return currentRenderer; };
-
-	void initializeWindow();
-	void run(shared_ptr<ofApp> appPtr);
+	void close();
 
 	void hideCursor();
 	void showCursor();
 
-	void setFullscreen(bool fullScreen);
-	void toggleFullscreen();
+//	int getHeight();
+//	int getWidth();
 
-	static void exitApp();
+	ofCoreEvents & events();
+	shared_ptr<ofBaseRenderer> & renderer();
+
+//	QtWindow* getQtWindow();
+//	void * getWindowContext() { return getQtWindow(); }
+	ofGLWindowSettings getSettings() { return settings; }
+
+	glm::vec2 	getWindowPosition();
+	glm::vec2	getWindowSize();
+	glm::vec2	getScreenSize();
 
 	void setWindowTitle(string title);
 	void setWindowPosition(int x, int y);
 	void setWindowShape(int w, int h);
 
-	glm::vec2		getWindowPosition();
-	glm::vec2		getWindowSize();
-	glm::vec2		getScreenSize();
-
+//	void			setOrientation(ofOrientation orientation);
+//	ofOrientation	getOrientation();
 	ofWindowMode	getWindowMode();
 
-	int			getFrameNum();
-	float		getFrameRate();
-	void		setFrameRate(float targetRate);
+//	void		setFullscreen(bool fullscreen);
+//	void		toggleFullscreen();
 
 	void		enableSetupScreen();
 	void		disableSetupScreen();
 
-	/*	
-	static void display(void);
-	static void mouse_cb(int button, int state, int x, int y);
-	static void motion_cb(int x, int y);
-	static void passive_motion_cb(int x, int y);
-	static void idle_cb(void);
-	static void keyboard_cb(unsigned char key, int x, int y);
-	static void keyboard_up_cb(unsigned char key, int x, int y);
-	static void special_key_cb(int key, int x, int y) ;
-	static void special_key_up_cb(int key, int x, int y) ;
-	static void resize_cb(int w, int h);
-	*/
+//	void		setVerticalSync(bool bSync);
+
+//	void        setClipboardString(const string& text);
+//	string      getClipboardString();
+
+//	int         getPixelScreenCoordScale();
+
+	void 		makeCurrent();
+	void		swapBuffers();
+	void		startRender();
+	void		finishRender();
+
+//	static void listVideoModes();
+//	static void listMonitors();
+//	bool isWindowIconified();
+//	bool isWindowActive();
+//	bool isWindowResizeable();
+//	void iconify(bool bIconify);
+
+	///----- from GLUT example
+	void setAppPtr(shared_ptr<ofApp> appPtr);
+	static void exitApp();
+
+//	int			getFrameNum();
+//	float		getFrameRate();
+//	void		setFrameRate(float targetRate);
+
+
+public:
+	ofCoreEvents coreEvents;
+	shared_ptr<ofBaseRenderer> currentRenderer;
+	ofQtGLWindowSettings settings;
 
 	ofWindowMode	windowMode;
-	bool			bNewScreenMode;
-	float			timeNow, timeThen, fps;
-	int				nFramesForFPS;
-	int				nFrameCount;
-	int				buttonInUse;
-	bool			bEnableSetupScreen;
+	ofRectangle		windowRect;
+	ofOrientation	orientation;
 
-	bool			bFrameRateSet;
-	int 			millisForFrame;
-	int 			prevMillis;
-	int 			diffMillis;
+	bool			bEnableSetupScreen;
 	int				windowW, windowH;		// physical pixels width
 	int				currentW, currentH;		// scaled pixels width
 
-	//	float 			frameRate;
+	int				buttonInUse;
+	bool			buttonPressed;
 
-	int				requestedWidth;
-	int				requestedHeight;
-	int 			nonFullScreenX;
-	int 			nonFullScreenY;
-	int				mouseX, mouseY;
-	shared_ptr<ofApp>	ofAppPtr;
+	int 			nFramesSinceWindowResized;
+	bool			bWindowNeedsShowing;
+	bool			iconSet;
+	int				pixelScreenCoordScale;
 
-	ofCoreEvents coreEvents;
-	shared_ptr<ofBaseRenderer> currentRenderer;
-	ofGLWindowSettings settings;
-
-
-	//QT Stuff
-	QApplication* qtApp;
-	Window * window;
+	// Of App Ptr
+	shared_ptr<ofApp>			ofAppPtr;
+	// Qt Stuff
+	QApplication *				qtAppPtr;
+//	QWindow*					windowPtr;
+//	QWidget*					windowPtr;
+	QtGLWidget*					windowPtr;
+//	QtWindow*					windowPtr;
 
 	void setStatusMessage(string s);
-	//    Window window;
-	//  window.show();
-	// return app.exec();
+
 
 };

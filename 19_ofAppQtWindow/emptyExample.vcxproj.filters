@@ -46,31 +46,25 @@
     <ClCompile Include="src\ofAppQtWindow.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\window.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\glwidget.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="src\Controller.cpp">
       <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_glwidget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_glwidget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_window.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_window.cpp">
-      <Filter>Generated Files\Release</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Debug\moc_mainwindow.cpp">
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_mainwindow.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QtGLWidget.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\QtWindow.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_QtGLWidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_QtGLWidget.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>
@@ -116,10 +110,13 @@
     <CustomBuild Include="src\mainwindow.ui">
       <Filter>src</Filter>
     </CustomBuild>
-    <CustomBuild Include="src\window.h">
+    <CustomBuild Include="src\QtGLWidget.h">
       <Filter>src</Filter>
     </CustomBuild>
-    <CustomBuild Include="src\glwidget.h">
+    <CustomBuild Include="src\QtWindow.h">
+      <Filter>src</Filter>
+    </CustomBuild>
+    <CustomBuild Include="src\ofAppQtWindow.h">
       <Filter>src</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -159,9 +156,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\addons\ofxGui\src\ofxToggle.h">
       <Filter>addons\ofxGui\src</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ofAppQtWindow.h">
-      <Filter>src</Filter>
     </ClInclude>
     <ClInclude Include="src\Controller.h">
       <Filter>src</Filter>

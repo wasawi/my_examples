@@ -1,52 +1,56 @@
 
-#include "glwidget.h"
-#include "window.h"
+#include "QtGLWidget.h"
+#include "QtWindow.h"
 #include <QtGui>
 
 //! [0]
-
-void Window::setApp(shared_ptr<ofApp> app){
+/*
+void QtWindow::setApp(shared_ptr<ofAppPtr> app){
 	app = app;
-	glWidget->ofApp = app;
+	glWidget->ofAppPtr = app;
 }
 
-int Window::getGlWidth(){
+void QtWindow::update()
+{
+	emit updateQt();
+}
+
+int QtWindow::getGlWidth(){
 	return glWidget->width();
 }
-int Window::getGlHeight(){
+int QtWindow::getGlHeight(){
 	return glWidget->height(); 
 }
-float Window::getGlFrameRate(){
+float QtWindow::getGlFrameRate(){
 	return glWidget->frameRate;
-
 }
 
-Window::Window(shared_ptr<ofApp> _app)
+QtWindow::QtWindow(shared_ptr<ofAppPtr> _app)
 {
 	
 	QWidget * content = new QWidget();
 
 	app = _app;
-	tab = new QTabWidget;
-	viewCombo = new QComboBox();
+//	tab = new QTabWidget;
+//	viewCombo = new QComboBox();
 
-    glWidget = new GLWidget(app);
-	glWidget->setFixedWidth(500);
-	glWidget->setFixedHeight(500);
+    glWidget = new QtGLWidget(app);
+//	glWidget->setFixedWidth(500);
+//	glWidget->setFixedHeight(500);
 	
 //	content->setFixedWidth(500);
 //	content->setFixedHeight(500);
 	
-	glWidget->tab = tab;
-	glWidget->viewCombo = viewCombo;
+//	glWidget->tab = tab;
+//	glWidget->viewCombo = viewCombo;
 	
 	QTimer *timer = new QTimer(this);
     timer->setInterval(20);
-	QObject::connect(timer, SIGNAL(timeout()), glWidget, SLOT(update()));
-	QObject::connect(timer, SIGNAL(timeout()), glWidget, SLOT(updateGL()));
+//	QObject::connect(timer, SIGNAL(timeout()), glWidget, SLOT(update()));
+	QObject::connect(this, SIGNAL(updateQt()), glWidget, SLOT(updateGL()));
 	timer->start();
 	
-    setWindowTitle(tr("GUI Shell"));
+    setWindowTitle(tr("Qt window"));
 	
 	QTimer *settingsTimer = new QTimer(this);
     settingsTimer->setInterval(1000);
@@ -69,11 +73,10 @@ Window::Window(shared_ptr<ofApp> _app)
 	
 	//tab->addTab(settingsGroupBox, "General");
 	
-	/*
-	QDockWidget *dockWidget = new QDockWidget(tr("General"), this);
-	dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea |
-								Qt::RightDockWidgetArea);
-	dockWidget->setWidget(settingsGroupBox);*/
+	//QDockWidget *dockWidget = new QDockWidget(tr("General"), this);
+	//dockWidget->setAllowedAreas(Qt::LeftDockWidgetArea |
+	//							Qt::RightDockWidgetArea);
+	//dockWidget->setWidget(settingsGroupBox);
 	//addDockWidget(Qt::RightDockWidgetArea, dockWidget);
 	
 	setTabPosition(Qt::RightDockWidgetArea,QTabWidget::East);
@@ -88,7 +91,7 @@ Window::Window(shared_ptr<ofApp> _app)
 	
 	
 	glGroupBox->setLayout(glLayout);
-	glLayout->addWidget(viewCombo);
+//	glLayout->addWidget(viewCombo);
 	glLayout->addWidget(glWidget);
 	glLayout->setAlignment(Qt::AlignTop);
 	
@@ -123,17 +126,17 @@ Window::Window(shared_ptr<ofApp> _app)
 	setDockOptions(QMainWindow::AnimatedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AllowNestedDocks);
 
 }
-void Window::saveSettings()
+void QtWindow::saveSettings()
 {
 //	app->saveSettings(settings);
 	settings->setValue("mainwindow/size", size());
 	settings->setValue("mainwindow/pos", pos());
 //	settings->setValue("maintab/index", tab->currentIndex());
-	settings->setValue("viewCombo/index", viewCombo->currentIndex());
+//	settings->setValue("viewCombo/index", viewCombo->currentIndex());
 	settings->setValue("layout/state", 	saveState());
 }
 
-void Window::loadSettings()
+void QtWindow::loadSettings()
 {
 	// SETTINGS
 	
@@ -141,17 +144,18 @@ void Window::loadSettings()
 	resize(settings->value("mainwindow/size", QSize(400, 400)).toSize());
 	move(settings->value("mainwindow/pos", QPoint(200, 200)).toPoint());
 //	tab->setCurrentIndex(settings->value("maintab/index").toInt());
-	viewCombo->setCurrentIndex(settings->value("viewCombo/index").toInt());
+//	viewCombo->setCurrentIndex(settings->value("viewCombo/index").toInt());
 	restoreState((settings->value("layout/state").toByteArray()));
 }
 
-void Window::keyPressEvent(QKeyEvent *event){
+void QtWindow::keyPressEvent(QKeyEvent *event){
 	app->keyPressed(event->key());
 }
 
-void Window::KeyReleaseEvent(QKeyEvent *event){
+void QtWindow::KeyReleaseEvent(QKeyEvent *event){
 	app->keyReleased(event->key());
 }
 
-void Window::toggleLock(){
+void QtWindow::toggleLock(){
 }
+*/
