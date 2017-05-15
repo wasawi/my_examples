@@ -94,12 +94,12 @@ int main( )
 	////////////////////////////////
 	//	QT single window example
 	////////////////////////////////
-	/*
+//	/*
 	ofAppQtWindow window;
 	//	window.setMultiDisplayFullscreen(true);
 	ofSetupOpenGL(&window, 800, 400, OF_WINDOW);
 	ofRunApp(new ofApp);
-	*/
+//	*/
 	// -- or
 	/*
 	shared_ptr<ofApp> app = make_shared<ofApp>();
@@ -107,23 +107,13 @@ int main( )
 	ofSetupOpenGL(&window, 800, 400, OF_WINDOW);
 	ofRunApp(app);
 	*/
-	// -- or
-	/*
-	ofQtGLWindowSettings settings;
-	settings.width = 600;
-	settings.height = 600;
-	settings.setPosition(ofVec2f(300,0));
-	settings.resizable = true;
-	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>();
-	mainWindow->setup(settings);
-	shared_ptr<ofApp> mainApp(new ofApp);
-	ofRunApp(mainWindow, mainApp);
-	ofRunMainLoop();
-	*/
+
+
+
 
 	/*
 	////////////////////////////////
-	//	QT multiwindow example multiple app			NOT WORKING.
+	//	QT multiwindow example			NOT WORKING.
 	////////////////////////////////
 	ofQtGLWindowSettings settings;
 
@@ -149,6 +139,7 @@ int main( )
 	*/
 
 	
+/*
 	////////////////////////////////
 	//	QT multiwindow example One App
 	////////////////////////////////
@@ -170,8 +161,6 @@ int main( )
 //	shared_ptr<ofAppBaseWindow> mainWindow = shared_ptr<ofAppQtWindow>(new ofAppQtWindow());
 	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(qtAppPtr);
 	ofSetupOpenGL(mainWindow.get(), 800, 400, OF_WINDOW);
-	mainWindow->setVerticalSync(true);
-	mainWindow->setWindowTitle("Main Qt widow");
 
 	settings.width = 300;
 	settings.height = 300;
@@ -183,38 +172,7 @@ int main( )
 //	shared_ptr<ofAppBaseWindow> guiWindow = shared_ptr<ofAppQtWindow>(new ofAppQtWindow());
 	shared_ptr<ofAppQtWindow> guiWindow = make_shared<ofAppQtWindow>(qtAppPtr);
 	ofSetupOpenGL(guiWindow.get(), 300, 300, OF_WINDOW);
-	guiWindow->setVerticalSync(true);
-	mainWindow->setWindowTitle("GUI Qt widow");
-
-	shared_ptr<ofApp> mainApp(new ofApp);
-	mainApp->setupGui();
-	ofAddListener(guiWindow->events().draw, mainApp.get(), &ofApp::drawGui);
-
-	ofRunApp(mainWindow, mainApp);
-	ofRunMainLoop();
-	
-
-
-/*
-	////////////////////////////////
-	//	GLFW multiwindow example One App
-	////////////////////////////////
-	ofGLFWWindowSettings settings;
-	settings.width = 600;
-	settings.height = 600;
-	settings.setPosition(ofVec2f(300, 20));
-	settings.resizable = true;
-	shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
-	mainWindow->setVerticalSync(true);
-	mainWindow->setWindowTitle("Main Qt widow");
-
-	settings.width = 300;
-	settings.height = 300;
-	settings.setPosition(ofVec2f(20, 20));
-	settings.resizable = true;
-	shared_ptr<ofAppBaseWindow> guiWindow = ofCreateWindow(settings);
-	guiWindow->setVerticalSync(true);
-	mainWindow->setWindowTitle("GUI Qt widow");
+	guiWindow->setVerticalSync(false);
 
 	shared_ptr<ofApp> mainApp(new ofApp);
 	mainApp->setupGui();
@@ -223,4 +181,5 @@ int main( )
 	ofRunApp(mainWindow, mainApp);
 	ofRunMainLoop();
 	*/
+
 }

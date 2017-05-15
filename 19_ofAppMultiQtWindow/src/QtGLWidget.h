@@ -24,14 +24,7 @@ public:
 
 //	void swapBuffers();
 
-	void setWindowTitle(string title);
-	void setNumSamples(int _samples);
-	void setAlphabits(int _samples);
-
-	ofPoint getFrameBufferSize();
-
 protected:
-	// Qt overrides
 	void initializeGL();					// required from Qt
     void paintGL();							// required from Qt
     void resizeGL(int width, int height);	// required from Qt
@@ -77,7 +70,6 @@ protected:
 private:
 		QPoint lastPos;
 		int mousePressed;	
-//		bool initialized;
 
 	public slots:
 

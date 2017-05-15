@@ -32,19 +32,20 @@ class ofApp : public ofBaseApp{
         void dragEvent(ofDragInfo dragInfo);
         void gotMessage(ofMessage msg);
 
-//		Ui::MainWindow *ui;
-//		MainWindow * w;
-//		shared_ptr<GuiApp> QtGUI;
-
+        Ui::MainWindow *ui;
+		
 		ofPoint cursor;
 		string key_str;
 
-//		void saveSettings(QSettings * settings);
-//		void loadSettings(QSettings * settings);
+		shared_ptr<GuiApp> QtGUI;
 
-//		Controller * controller;
-//		QSettings * settings;
+		void saveSettings(QSettings * settings);
+		void loadSettings(QSettings * settings);
+
+		Controller * controller;
+		QSettings * settings;
 //		QMainWindow * window;
+		MainWindow * w;
 
 		ofParameterGroup parameters;
 		ofParameter<float> radius;

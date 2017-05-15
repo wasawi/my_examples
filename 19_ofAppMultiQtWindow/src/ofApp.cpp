@@ -5,38 +5,35 @@
 void ofApp::setup(){
 	ofLogLevel(OF_LOG_VERBOSE);
 	ofLogToConsole();
-//	ofSetFrameRate(1);
-	ofBackground(0);
 
-
-//	w = new MainWindow();
-//	ui = w->ui;
-//	w->show();
+	w = new MainWindow();
+	ui = w->ui;
+	w->show();
 
 
     radius = 100;
 	color = ofColor::blue;
 
-	//// POPULATE TABLE WITH VECTOR OF STRINGS
- //   vector<string> my_strings;
- //   my_strings.push_back("celery");
- //   my_strings.push_back("pomegranate");
- //   my_strings.push_back("grapefruit");
- //   my_strings.push_back("melon");
+	// POPULATE TABLE WITH VECTOR OF STRINGS
+    vector<string> my_strings;
+    my_strings.push_back("celery");
+    my_strings.push_back("pomegranate");
+    my_strings.push_back("grapefruit");
+    my_strings.push_back("melon");
 
- //   int numRows = ui->Table->rowCount();
- //   int numCols = ui->Table->columnCount();
- //   int whichString = 0;
+    int numRows = ui->Table->rowCount();
+    int numCols = ui->Table->columnCount();
+    int whichString = 0;
 
- //   for(int r = 0; r < numRows; r++) {
- //       for(int c = 0; c < numCols; c++) {
- //           QTableWidgetItem *itab = new QTableWidgetItem;
- //           QString qstr = QString::fromStdString(my_strings[whichString]);
- //           itab->setText(qstr);
- //           ui->Table->setItem(r,c,itab);
- //           whichString++;
- //       }
- //   }
+    for(int r = 0; r < numRows; r++) {
+        for(int c = 0; c < numCols; c++) {
+            QTableWidgetItem *itab = new QTableWidgetItem;
+            QString qstr = QString::fromStdString(my_strings[whichString]);
+            itab->setText(qstr);
+            ui->Table->setItem(r,c,itab);
+            whichString++;
+        }
+    }
 	
 	cursor = ofPoint(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2);
 	key_str = "";
@@ -44,55 +41,40 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::setupGui() {
-
 	parameters.setName("parameters");
 	parameters.add(radius.set("radius", 50, 1, 100));
 	parameters.add(color.set("color", 100, ofColor(0, 0), 255));
 	OfGUI.setup(parameters);
+	ofSetBackgroundColor(0);
 }
-
 //--------------------------------------------------------------
 void ofApp::drawGui(ofEventArgs & args) {
-	cout << "drawGui" << endl;
-	ofBackground(0);
-
-//	ofSetBackgroundColor(100);
-//	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//	ofDisableAlphaBlending();
-
-//	auto renderer = ofGetGLRenderer();
-//	renderer->startRender();
-	
-//	renderer->finishRender();
-	ofSetColor(255, 100);
-	ofRect(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2, radius, radius);
-
-
 	OfGUI.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	cout << "----------------------------" << endl;
-    //double xvalue=ui->Slider->value();
-    //radius = int(xvalue);
+    double xvalue=ui->Slider->value();
+    radius = int(xvalue);
 
-	//if (ui->pushButton->isDown() == true) {
-	//	color = ofColor::red;
-	//	ofSetWindowPosition(ofGetWindowPositionX() + 10, ofGetWindowPositionY() + 10);
-	//	ofSetWindowShape(500, 500);
-	//}
-	//else {
-	//	color = ofColor::white;
-	//}
+	if (ui->pushButton->isDown() == true) {
+		color = ofColor::red;
+		ofSetWindowPosition(ofGetWindowPositionX() + 10, ofGetWindowPositionY() + 10);
+		ofSetWindowShape(500, 500);
+	}
+	else {
+		color = ofColor::white;
+	}
 
 //	cout << ofGetWindowPositionX() << endl;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	cout << "draw ofapp" << endl;
 	ofBackground(color);
+
+	ofEnableAntiAliasing();
+	ofEnableAlphaBlending();
 
     ofPushStyle();
     ofSetColor(ofColor::ghostWhite);
@@ -167,15 +149,15 @@ void ofApp::dragEvent(ofDragInfo dragInfo){
 
 }
 
-////--------------------------------------------------------------
-//void ofApp::saveSettings(QSettings * settings)
-//{
-//	controller->saveSettings(settings);
-//
-//}
-////--------------------------------------------------------------
-//void ofApp::loadSettings(QSettings * settings)
-//{
-//	controller->loadSettings(settings);
-//
-//}
+//--------------------------------------------------------------
+void ofApp::saveSettings(QSettings * settings)
+{
+	controller->saveSettings(settings);
+
+}
+//--------------------------------------------------------------
+void ofApp::loadSettings(QSettings * settings)
+{
+	controller->loadSettings(settings);
+
+}

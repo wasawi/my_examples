@@ -37,16 +37,6 @@ ofAppQtWindow::~ofAppQtWindow() {
 }
 
 //------------------------------------------------------------
-ofAppQtWindow * ofAppQtWindow::setCurrent(ofAppQtWindow* windowP) {
-	shared_ptr<ofMainLoop> mainLoop = ofGetMainLoop();
-	if (mainLoop) {
-		mainLoop->setCurrentWindow(windowP);
-	}
-	windowP->makeCurrent();
-	return windowP;
-}
-
-//------------------------------------------------------------
 #ifdef TARGET_OPENGLES
 void ofAppGLFWWindow::setup(const ofGLESWindowSettings & settings) {
 #else
@@ -111,19 +101,16 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 //	currentH = windowPtr->size().height();
 	windowW = settings.width;
 	windowH = settings.height;
+//	windowPtr->setFixedHeight(windowH);
+//	windowPtr->setFormat(format);
 
-	//////////////////////////////////////
-	// format Qt window
-	//////////////////////////////////////
 	//don't try and show a window if its been requsted to be hidden
 	bWindowNeedsShowing = settings.visible;
-	windowPtr->setAlphabits(settings.alphaBits);
-
-	windowPtr->setNumSamples(settings.numSamples);
 	windowPtr->makeCurrent();
 	windowPtr->show();
 
-	//	glfwGetFramebufferSize(windowPtr, &framebufferW, &framebufferH);
+//	int framebufferW, framebufferH;
+//	glfwGetFramebufferSize(windowPtr, &framebufferW, &framebufferH);
 
 	//this lets us detect if the window is running in a retina mode
 	//if (framebufferW != windowW) {
@@ -166,10 +153,6 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 		static_cast<ofGLRenderer*>(currentRenderer.get())->setup();
 	}
 
-	//int framebufferW, framebufferH;
-	//glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferW);
-	//glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferH);
-
 
 	//////////////////////////////////////
 	// notes
@@ -203,7 +186,7 @@ void ofAppQtWindow::update() {
 }
 //------------------------------------------------------------
 void ofAppQtWindow::draw() {
-	cout << "draw ofAppQtWindow" << endl;
+//	cout << "draw" << endl;
 	currentRenderer->startRender();
 
 	if (bEnableSetupScreen) currentRenderer->setupScreen();
@@ -278,9 +261,9 @@ shared_ptr<ofBaseRenderer> & ofAppQtWindow::renderer() {
 //	ofAppPtr = appPtr;
 //}
 
-////------------------------------------------------------------
-//void ofAppQtWindow::setStatusMessage(string s) {
-//}
+//------------------------------------------------------------
+void ofAppQtWindow::setStatusMessage(string s) {
+}
 
 //------------------------------------------------------------
 void ofAppQtWindow::exitApp() {
@@ -295,8 +278,7 @@ void ofAppQtWindow::exitApp() {
 
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowTitle(string title) {
-	settings.title = title;
-	windowPtr->setWindowTitle(title);
+	windowPtr->setWindowTitle(QString(title.c_str()));
 }
 
 //------------------------------------------------------------

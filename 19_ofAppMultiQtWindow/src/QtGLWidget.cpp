@@ -10,8 +10,7 @@ QtGLWidget::QtGLWidget(ofAppQtWindow* _windowPtr){
 	qt_set_sequence_auto_mnemonic(true);
 	mousePressed = 0;
 	setMouseTracking(true);
-	setAttribute(Qt::WA_AlwaysStackOnTop, true); // very important. fixes transparency bug
-	setUpdateBehavior(QOpenGLWidget::PartialUpdate); // very important. allows updates from of
+	setUpdateBehavior(QOpenGLWidget::PartialUpdate); // very important
 
 //	ofAppPtr = _ofAppPtr;
 	instance = _windowPtr;
@@ -22,49 +21,18 @@ QtGLWidget::~QtGLWidget(){
 
 void QtGLWidget::initializeGL()
 {
-	cout << "initializeGL" << endl;
+//	cout << "initializeGL" << endl;
 }
 
 void QtGLWidget::paintGL()
 {
-	cout << "paintGL" << endl;
+//	cout << "paintGL" << endl;
 }
 
 void QtGLWidget::resizeGL(int width, int height)
 {
 //	cout << "resizeGL" << endl;
 	instance->events().notifyWindowResized(width, height);
-}
-
-//------------------------------------------------------------
-void QtGLWidget::setWindowTitle(string title) {
-	QOpenGLWidget::setWindowTitle(title.c_str());
-}
-//------------------------------------------------------------
-void QtGLWidget::setNumSamples(int _samples) {
-	////setSurfaceType(QWindow::OpenGLSurface);
-	QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-	format.setSamples(_samples);    // Set the number of samples used for multisampling
-	setFormat(format);       // Note we set the format on the window...
-	create();                // Create the window
-}
-//------------------------------------------------------------
-void QtGLWidget::setAlphabits(int _samples) {
-	////setSurfaceType(QWindow::OpenGLSurface);
-	QSurfaceFormat format = QSurfaceFormat::defaultFormat();
-	format.setAlphaBufferSize(_samples);    // Set the number of samples used for multisampling
-	setFormat(format);       // Note we set the format on the window...
-	create();                // Create the window
-}
-
-//------------------------------------------------------------
-ofPoint QtGLWidget::getFrameBufferSize() {
-	// TODO:
-//	GLuint fbo;
-//	QOpenGLContext *context;
-//	context = QOpenGLWidget::context();
-//	context->defaultFramebufferObject();	
-	return ofPoint();
 }
 
 //------------------------------------------------------------
@@ -163,7 +131,6 @@ void QtGLWidget::keyReleaseEvent(QKeyEvent * event)
 
 void QtGLWidget::mouseMoveEvent(QMouseEvent *event)
 {
-	instance = instance->setCurrent(instance);
 	double x = event->x();
 	double y = event->y();
 
@@ -191,7 +158,6 @@ void QtGLWidget::mousePressEvent(QMouseEvent *event)
 	ofNotifyEvent(ofEvents().mousePressed, mouseEventArgs);
 	*/
 
-	instance = instance->setCurrent(instance);
 	Qt::MouseButton qtButton = event->button();
 	int ofButton;
 
@@ -214,7 +180,6 @@ void QtGLWidget::mousePressEvent(QMouseEvent *event)
 
 void QtGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
-	instance = instance->setCurrent(instance);
 	Qt::MouseButton qtButton = event->button();
 	int ofButton;
 

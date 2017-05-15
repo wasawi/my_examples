@@ -134,7 +134,8 @@ public:
 //	float		getFrameRate();
 //	void		setFrameRate(float targetRate);
 
-	static ofAppQtWindow * setCurrent(ofAppQtWindow* windowP);
+
+public:
 	ofCoreEvents coreEvents;
 	shared_ptr<ofBaseRenderer> currentRenderer;
 	ofQtGLWindowSettings settings;
@@ -155,16 +156,13 @@ public:
 	bool			iconSet;
 	int				pixelScreenCoordScale;
 
+	// Of App Ptr
+	shared_ptr<ofBaseApp>		ofAppPtr;
+	// Qt Stuff
+	QApplication *				qtAppPtr;
+	QtGLWidget*					windowPtr;
 
-
-	private:
-		// Of App Ptr
-		shared_ptr<ofBaseApp>		ofAppPtr;
-		// Qt Stuff
-		QApplication *				qtAppPtr;
-		QtGLWidget*					windowPtr;
-
-//	void setStatusMessage(string s);
+	void setStatusMessage(string s);
 
 
 };
