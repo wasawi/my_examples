@@ -51,6 +51,8 @@ public:
 	ofAppQtWindow(QApplication * qtApp = 0);
 	~ofAppQtWindow();
 
+	void setQtAppPointer(QApplication * qtApp);
+
 	// Can't be copied, use shared_ptr
 	ofAppQtWindow(ofAppQtWindow & w) = delete;
 	ofAppQtWindow & operator=(ofAppQtWindow & w) = delete;

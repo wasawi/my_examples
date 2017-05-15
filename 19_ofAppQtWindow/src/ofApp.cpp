@@ -53,8 +53,8 @@ void ofApp::setupGui() {
 
 //--------------------------------------------------------------
 void ofApp::drawGui(ofEventArgs & args) {
-	cout << "drawGui" << endl;
-	ofBackground(0);
+//	cout << "drawGui" << endl;
+	ofBackground(ofColor::black);
 
 //	ofSetBackgroundColor(100);
 //	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -64,16 +64,17 @@ void ofApp::drawGui(ofEventArgs & args) {
 //	renderer->startRender();
 	
 //	renderer->finishRender();
-	ofSetColor(255, 100);
+	ofSetColor(ofColor::white, 100);
 	ofRect(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2, radius, radius);
-
+	ofSetColor(ofColor::red, 100);
+	ofRect(ofGetWindowWidth() / 2 - radius, ofGetWindowHeight() / 2 - radius, radius, radius);
 
 	OfGUI.draw();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	cout << "----------------------------" << endl;
+//	cout << "----------------------------" << endl;
     //double xvalue=ui->Slider->value();
     //radius = int(xvalue);
 
@@ -91,7 +92,7 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-	cout << "draw ofapp" << endl;
+//	cout << "draw ofapp" << endl;
 	ofBackground(color);
 
     ofPushStyle();
@@ -105,7 +106,7 @@ void ofApp::draw(){
 //    ofEllipse(ofGetWidth()/2, ofGetHeight()/2, radius*2, radius*2);
 	ofSetColor(ofColor::black);
 	ofRect(ofGetWindowWidth()/2- radius/2, ofGetWindowHeight()/2 - radius / 2, radius, radius);
-	ofSetColor(ofColor::yellow);
+	ofSetColor(ofColor::yellow, 100);
 //	ofSetCircleResolution(20);
 	ofCircle(cursor.x, cursor.y, radius / 2);
 

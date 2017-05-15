@@ -27,7 +27,7 @@ void QtGLWidget::initializeGL()
 
 void QtGLWidget::paintGL()
 {
-	cout << "paintGL" << endl;
+//	cout << "paintGL" << endl;
 }
 
 void QtGLWidget::resizeGL(int width, int height)

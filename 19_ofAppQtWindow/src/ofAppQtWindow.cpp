@@ -16,12 +16,9 @@ ofAppQtWindow::ofAppQtWindow(QApplication * qtApp) {
 	currentW = 0;
 	currentH = 0;
 
-	// if not created in main.cpp create Qt app 
+	// if not passed as parameter create Qt app during setup
 	if (qtApp == 0) {
-		int argc = 1;
-		char *argv = "openframeworks";
-		char **vptr = &argv;
-		qtAppPtr = new QApplication(argc, vptr);
+		qtAppPtr = nullptr;
 	}
 	else {
 		qtAppPtr = qtApp;
@@ -34,6 +31,11 @@ ofAppQtWindow::ofAppQtWindow(QApplication * qtApp) {
 //----------------------------------------------------------
 ofAppQtWindow::~ofAppQtWindow() {
 	close();
+}
+
+void ofAppQtWindow::setQtAppPointer(QApplication * qtApp)
+{
+	qtAppPtr = qtApp;
 }
 
 //------------------------------------------------------------
@@ -63,7 +65,7 @@ void ofAppQtWindow::setup(const ofGLWindowSettings & settings) {
 
 //------------------------------------------------------------
 void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
-//	cout << "setup" << endl;
+	cout << "setup" << endl;
 	if (windowPtr) {
 		ofLogError() << "window already setup, probably you are mixing old and new style setup";
 		ofLogError() << "call only ofCreateWindow(settings) or ofSetupOpenGL(...)";
@@ -72,6 +74,13 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 	}
 	settings = _settings;
 
+	// if not created in main.cpp or in constructor create Qt app 
+	if (qtAppPtr == nullptr) {
+		int argc = 1;
+		char *argv = "openframeworks";
+		char **vptr = &argv;
+		qtAppPtr = new QApplication(argc, vptr);
+	}
 
 	//////////////////////////////////////
 	// setup OpenGL
@@ -107,18 +116,13 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 //	windowPtr = new QWidget();
 	windowPtr = new QtGLWidget(this);
 	windowPtr->resize(settings.width, settings.height);
+	windowPtr->setWindowTitle(settings.title);
 //	currentW = windowPtr->size().width();
 //	currentH = windowPtr->size().height();
 	windowW = settings.width;
 	windowH = settings.height;
-
-	//////////////////////////////////////
-	// format Qt window
-	//////////////////////////////////////
-	//don't try and show a window if its been requsted to be hidden
 	bWindowNeedsShowing = settings.visible;
 	windowPtr->setAlphabits(settings.alphaBits);
-
 	windowPtr->setNumSamples(settings.numSamples);
 	windowPtr->makeCurrent();
 	windowPtr->show();
@@ -203,7 +207,7 @@ void ofAppQtWindow::update() {
 }
 //------------------------------------------------------------
 void ofAppQtWindow::draw() {
-	cout << "draw ofAppQtWindow" << endl;
+//	cout << "draw ofAppQtWindow" << endl;
 	currentRenderer->startRender();
 
 	if (bEnableSetupScreen) currentRenderer->setupScreen();

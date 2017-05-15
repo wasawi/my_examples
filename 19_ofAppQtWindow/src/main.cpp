@@ -161,48 +161,66 @@ int main( )
 	char **vptr = &argv;
 	QApplication *	qtAppPtr = new QApplication(argc, vptr);
 
-	ofQtGLWindowSettings settings;
-	settings.width = 600;
-	settings.height = 600;
-	settings.setPosition(ofVec2f(300,0));
-	settings.resizable = true;
-//	shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
-//	shared_ptr<ofAppBaseWindow> mainWindow = shared_ptr<ofAppQtWindow>(new ofAppQtWindow());
+	
+//	//the long way:
+//	ofQtGLWindowSettings settings;
+//	settings.width = 800;
+//	settings.height = 400;
+//	settings.setPosition(ofVec2f(300,0));
+//	settings.resizable = true;
+//	settings.title = "Main Qt widow";
+//
+//	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>();
+//	mainWindow->setQtAppPointer(qtAppPtr);
+////	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(qtAppPtr);
+//	ofGetMainLoop()->addWindow(mainWindow);
+//	mainWindow->setup(settings);
+//
+//	settings.width = 300;
+//	settings.height = 300;
+//	settings.setPosition(ofVec2f(500,400));
+//	settings.resizable = true;
+//	settings.title = "GUI Qt widow";
+//	// uncomment next line to share main's OpenGL resources with gui
+//	//settings.shareContextWith = mainWindow;	
+//
+////	shared_ptr<ofAppBaseWindow> guiWindow = ofCreateWindow(settings);
+////	guiWindow->setQtAppPointer(qtAppPtr);
+//
+//	shared_ptr<ofAppQtWindow> guiWindow = make_shared<ofAppQtWindow>(qtAppPtr); // create a window and pass a pointer to Qt app
+////	ofSetupOpenGL(guiWindow.get(), 300, 300, OF_WINDOW);
+//	ofGetMainLoop()->addWindow(guiWindow);
+//	guiWindow->setup(settings);
+//	guiWindow->setVerticalSync(true);
+	
+
+	// the short way
+	// the first has to be a pointer coz ofRunnApp.
 	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(qtAppPtr);
-	ofSetupOpenGL(mainWindow.get(), 800, 400, OF_WINDOW);
-	mainWindow->setVerticalSync(true);
+	ofSetupOpenGL(mainWindow, 800, 400, OF_WINDOW);
 	mainWindow->setWindowTitle("Main Qt widow");
+	mainWindow->setVerticalSync(true);
 
-	settings.width = 300;
-	settings.height = 300;
-	settings.setPosition(ofVec2f(0,0));
-	settings.resizable = false;
-	// uncomment next line to share main's OpenGL resources with gui
-	//settings.shareContextWith = mainWindow;	
-//	shared_ptr<ofAppBaseWindow> guiWindow = ofCreateWindow(settings);
-//	shared_ptr<ofAppBaseWindow> guiWindow = shared_ptr<ofAppQtWindow>(new ofAppQtWindow());
-	shared_ptr<ofAppQtWindow> guiWindow = make_shared<ofAppQtWindow>(qtAppPtr);
-	ofSetupOpenGL(guiWindow.get(), 300, 300, OF_WINDOW);
-	guiWindow->setVerticalSync(true);
-	mainWindow->setWindowTitle("GUI Qt widow");
+	ofAppQtWindow guiWindow(qtAppPtr);
+	ofSetupOpenGL(&guiWindow, 300, 300, OF_WINDOW);
+	guiWindow.setWindowTitle("GUI Qt widow");
+	guiWindow.setVerticalSync(true);
 
+	// create app
 	shared_ptr<ofApp> mainApp(new ofApp);
 	mainApp->setupGui();
-	ofAddListener(guiWindow->events().draw, mainApp.get(), &ofApp::drawGui);
-
+	ofAddListener(guiWindow.events().draw, mainApp.get(), &ofApp::drawGui);
 	ofRunApp(mainWindow, mainApp);
 	ofRunMainLoop();
 	
-
-
-/*
+	/*
 	////////////////////////////////
 	//	GLFW multiwindow example One App
 	////////////////////////////////
 	ofGLFWWindowSettings settings;
-	settings.width = 600;
-	settings.height = 600;
-	settings.setPosition(ofVec2f(300, 20));
+	settings.width = 800;
+	settings.height = 400;
+//	settings.setPosition(ofVec2f(300, 20));
 	settings.resizable = true;
 	shared_ptr<ofAppBaseWindow> mainWindow = ofCreateWindow(settings);
 	mainWindow->setVerticalSync(true);
@@ -210,7 +228,7 @@ int main( )
 
 	settings.width = 300;
 	settings.height = 300;
-	settings.setPosition(ofVec2f(20, 20));
+//	settings.setPosition(ofVec2f(20, 20));
 	settings.resizable = true;
 	shared_ptr<ofAppBaseWindow> guiWindow = ofCreateWindow(settings);
 	guiWindow->setVerticalSync(true);
