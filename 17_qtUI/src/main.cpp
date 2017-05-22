@@ -5,7 +5,7 @@
 
 int main( )
 {
-    ofSetupOpenGL(1024, 768, OF_WINDOW);
+    ofSetupOpenGL(400, 200, OF_WINDOW);
 
     int argc = 0;
     char *argv[] = {0};
