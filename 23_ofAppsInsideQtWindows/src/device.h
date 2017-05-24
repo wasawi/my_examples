@@ -16,17 +16,16 @@ class device : public QWidget
 	Q_OBJECT
 
 public:
-//	device( QWidget *parent = Q_NULLPTR);//shared_ptr<ofApp> _ofAppPtr,
-	device(QWidget *parent = Q_NULLPTR, shared_ptr<ofApp> _ofAppPtr = nullptr);//
+	device( QWidget *parent = Q_NULLPTR);//shared_ptr<ofApp> _ofAppPtr,
+//	device(QWidget *parent = Q_NULLPTR, shared_ptr<ofApp> _ofAppPtr = nullptr);//
 	~device();
 
 	QHBoxLayout *layout;
 	QTimer *timer;
 	
 //	ofApp ofAppPtr;
-	shared_ptr<ofApp> ofAppPtr;
-	shared_ptr<ofMainLoop> loop;
-	shared_ptr<ofAppQtWindow> mainWindow;
+	//shared_ptr<ofApp> ofAppPtr;
+	//shared_ptr<ofAppQtWindow> mainWindow;
 
 private:
 	Ui::device ui;
@@ -35,5 +34,6 @@ private:
 
 public slots:
 	void on_horizontalSlider_sliderMoved(int value);
+	void on_horizontalSlider_2_sliderMoved(int value);
 	void newframe();
 };

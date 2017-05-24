@@ -30,8 +30,8 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionIMX262_triggered() {
 //	ofAppPtr = make_shared<ofApp>();
 //	loadSubWindow(new device( ofAppPtr, this));
-	loadSubWindow(new device(this, ofAppPtr));
-//	loadSubWindow(new device(this));
+//	loadSubWindow(new device(this, ofAppPtr));
+	loadSubWindow(new device(this));
 
 }
 

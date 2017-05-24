@@ -1,8 +1,8 @@
 #include "device.h"
 
 
-//device::device( QWidget *parent)//shared_ptr<ofApp> _ofAppPtr,
-device::device(QWidget *parent, shared_ptr<ofApp> _ofAppPtr)
+device::device( QWidget *parent)//shared_ptr<ofApp> _ofAppPtr,
+//device::device(QWidget *parent, shared_ptr<ofApp> _ofAppPtr)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
@@ -14,30 +14,52 @@ device::device(QWidget *parent, shared_ptr<ofApp> _ofAppPtr)
 
 //	shared_ptr<ofApp> ofAppPtr(new ofApp);
 //	shared_ptr<ofApp> ofAppPtrr(&ofAppPtr);
-	ofAppPtr	= _ofAppPtr;
-
-//	ofAppPtr	= make_shared<ofApp>();
-
+//	ofAppPtr	= _ofAppPtr;
+//	shared_ptr<ofApp> mainApp(new ofApp);
+//	ofRunApp(mainWindow, mainApp);
+//	ofAppPtr = mainApp;
+//	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
+//	mainWindow->setAppPtr(ofAppPtr);
 //	loop = make_shared<ofMainLoop>();
 //	loop = ofGetMainLoop();
 
 	// create a window
-	mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
-	ofSetupOpenGL(mainWindow, 400, 400, OF_WINDOW);
-//	shared_ptr<ofApp> mainApp(new ofApp);
-//	ofRunApp(mainWindow, mainApp);
-//	ofAppPtr = mainApp;
+//	ofAppPtr = make_shared<ofApp>();
+//	mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
+//	ofSetupOpenGL(mainWindow, 400, 400, OF_WINDOW);
+
+
+
+	bool t1Running = true;
+	auto t1 = std::thread([&] {
+		shared_ptr<ofApp> ofAppPtr;
+		shared_ptr<ofAppQtWindow> mainWindow;
+		ofAppPtr = make_shared<ofApp>();
+		mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
+		ofSetupOpenGL(mainWindow, 400, 400, OF_WINDOW);
+		shared_ptr<ofMainLoop> mainLoop;
+		mainLoop = ofGetMainLoop();
+
+		// add widget to layout
+		layout = ui.horizontalLayout;
+		layout->addWidget(mainWindow->getQOpenGLWidget());
+		ui.widget_2->setLayout(layout);
+
+//		shared_ptr<ofApp> mainApp(new ofApp);
+//		mainApp->window = mainWindow;
+//		mainApp->gl = static_pointer_cast<ofGLRenderer>(mainWindow->renderer());
+//		mainLoop.run(mainWindow, mainApp);
+		while (!mainWindow->getWindowShouldClose()) {
+			mainLoop->loopOnce();
+		}
+		t1Running = false;
+	});
+	while (t1Running) {
+		ofSleepMillis(1000 / 60);
+	}
+	t1.join();
 
 	/*
-	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
-	mainWindow->setAppPtr(ofAppPtr);
-	*/
-	
-	// add widget to layout
-	layout = ui.horizontalLayout;
-	layout->addWidget(mainWindow->getQOpenGLWidget());
-	ui.widget_2->setLayout(layout);
-
 	timer = new QTimer(this);
 //	connect(timer, &QTimer::timeout, [=]() { newframe(); });
 	connect(timer, &QTimer::timeout, this, &device::newframe);
@@ -49,6 +71,7 @@ device::device(QWidget *parent, shared_ptr<ofApp> _ofAppPtr)
 	ofGetMainLoop()->setShouldClose(false);
 
 	timer->start(1);
+	*/
 }
 
 device::~device()
@@ -58,8 +81,8 @@ device::~device()
 	timer->stop();
 	timer->disconnect();
 
-	mainWindow->setWindowShouldClose(true);
-	ofGetMainLoop()->loopOnce();
+//	mainWindow->setWindowShouldClose(true);
+//	ofGetMainLoop()->loopOnce();
 
 	/* to debug ofMainLoop.cpp
 
@@ -84,7 +107,10 @@ void device::newframe()
 }
 
 void device::on_horizontalSlider_sliderMoved(int value) {
-	ofAppPtr->radius.set(value);
+//	ofAppPtr->radius.set(value);
 //	ofAppPtr.radius.set(value);
 
+}
+void device::on_horizontalSlider_2_sliderMoved(int value) {
+	ofSetFrameRate(value);
 }
