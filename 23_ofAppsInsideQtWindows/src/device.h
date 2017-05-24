@@ -24,8 +24,10 @@ public:
 	QTimer *timer;
 	
 //	ofApp ofAppPtr;
-	//shared_ptr<ofApp> ofAppPtr;
-	//shared_ptr<ofAppQtWindow> mainWindow;
+	shared_ptr<ofApp> ofAppPtr;
+	shared_ptr<ofMainLoop> loop;
+//	shared_ptr<ofGLRenderer> gl;
+	shared_ptr<ofAppQtWindow> windowPtr;
 
 private:
 	Ui::device ui;

@@ -16,62 +16,50 @@ device::device( QWidget *parent)//shared_ptr<ofApp> _ofAppPtr,
 //	shared_ptr<ofApp> ofAppPtrr(&ofAppPtr);
 //	ofAppPtr	= _ofAppPtr;
 //	shared_ptr<ofApp> mainApp(new ofApp);
-//	ofRunApp(mainWindow, mainApp);
+//	ofRunApp(windowPtr, mainApp);
 //	ofAppPtr = mainApp;
-//	shared_ptr<ofAppQtWindow> mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
-//	mainWindow->setAppPtr(ofAppPtr);
+//	shared_ptr<ofAppQtWindow> windowPtr = make_shared<ofAppQtWindow>(this->parentWidget());
+//	windowPtr->setAppPtr(ofAppPtr);
 //	loop = make_shared<ofMainLoop>();
 //	loop = ofGetMainLoop();
+//	shared_ptr<ofApp> ofAppPtr(new ofApp);
+//	ofInit();
+//	ofAppPtr->window = windowPtr;
+//	ofAppPtr->gl = static_pointer_cast<ofGLRenderer>(windowPtr->renderer());
+//	loop->addWindow(windowPtr);
+//	gl = static_pointer_cast<ofGLRenderer>(windowPtr->renderer());
+//	gl = make_shared<ofGLRenderer>(windowPtr.get());
+//	windowPtr->renderer() = gl;
+//	windowPtr->setup(windowPtr->getSettings());
+//	loop = ofGetMainLoop();
+//	loop->run(windowPtr, std::move(ofAppPtr));
+//	ofRunApp(windowPtr, ofAppPtr);
+//	ofRunApp(windowPtr, ofAppPtrr);
+//	ofGetMainLoop()->setShouldClose(false);
 
 	// create a window
-//	ofAppPtr = make_shared<ofApp>();
-//	mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
-//	ofSetupOpenGL(mainWindow, 400, 400, OF_WINDOW);
+	loop = make_shared<ofMainLoop>();
+	ofAppPtr = make_shared<ofApp>();
+	windowPtr = make_shared<ofAppQtWindow>(this->parentWidget());
+//	gl = static_pointer_cast<ofGLRenderer>(windowPtr->renderer());
 
+	ofSetMainLoop(loop);
+	ofSetupOpenGL(windowPtr, 400, 400, OF_WINDOW);
+//	ofSetCurrentRenderer(gl);
 
+	ofRunApp(windowPtr, ofAppPtr);
+//	loop->run(windowPtr, ofAppPtr);
 
-	bool t1Running = true;
-	auto t1 = std::thread([&] {
-		shared_ptr<ofApp> ofAppPtr;
-		shared_ptr<ofAppQtWindow> mainWindow;
-		ofAppPtr = make_shared<ofApp>();
-		mainWindow = make_shared<ofAppQtWindow>(this->parentWidget());
-		ofSetupOpenGL(mainWindow, 400, 400, OF_WINDOW);
-		shared_ptr<ofMainLoop> mainLoop;
-		mainLoop = ofGetMainLoop();
+	// add widget to layout
+	layout = ui.horizontalLayout;
+	layout->addWidget(windowPtr->getQOpenGLWidget());
+	ui.widget_2->setLayout(layout);
 
-		// add widget to layout
-		layout = ui.horizontalLayout;
-		layout->addWidget(mainWindow->getQOpenGLWidget());
-		ui.widget_2->setLayout(layout);
-
-//		shared_ptr<ofApp> mainApp(new ofApp);
-//		mainApp->window = mainWindow;
-//		mainApp->gl = static_pointer_cast<ofGLRenderer>(mainWindow->renderer());
-//		mainLoop.run(mainWindow, mainApp);
-		while (!mainWindow->getWindowShouldClose()) {
-			mainLoop->loopOnce();
-		}
-		t1Running = false;
-	});
-	while (t1Running) {
-		ofSleepMillis(1000 / 60);
-	}
-	t1.join();
-
-	/*
 	timer = new QTimer(this);
 //	connect(timer, &QTimer::timeout, [=]() { newframe(); });
 	connect(timer, &QTimer::timeout, this, &device::newframe);
 
-
-//	loop->run(mainWindow, std::move(ofAppPtr));
-	ofRunApp(mainWindow, ofAppPtr);
-//	ofRunApp(mainWindow, ofAppPtrr);
-	ofGetMainLoop()->setShouldClose(false);
-
 	timer->start(1);
-	*/
 }
 
 device::~device()
@@ -81,36 +69,36 @@ device::~device()
 	timer->stop();
 	timer->disconnect();
 
-//	mainWindow->setWindowShouldClose(true);
+	/* to close a window in case we have one single loop for all:
+	//	ofExit();//this is wrong
+//	windowPtr->setWindowShouldClose(true);
 //	ofGetMainLoop()->loopOnce();
+//	loop->loopOnce();
+	*/
 
 	/* to debug ofMainLoop.cpp
-
 	cout << "windowsApps.size " << windowsApps.size() << endl;
 	for(auto i = windowsApps.begin(); !windowsApps.empty() && i != windowsApps.end();){
 	cout << "current window should close " << i->first->getWindowShouldClose() << endl;
 	if(i->first->getWindowShouldClose()){
-	
 	*/
 }
 
 void device::newframe()
 {
 	cout << "nf" << endl;
-	ofGetMainLoop()->loopOnce();
-//	loop->loopOnce();
-//	loop->run(mainWindow, std::move(ofAppPtr));
-
-	// following does not work
-//	ofGetMainLoop()->run(mainWindow, ofAppPtr);
-//	ofRunApp(mainWindow, ofAppPtr);
+//	ofGetMainLoop()->loopOnce();
+	loop->loopOnce();
 }
 
 void device::on_horizontalSlider_sliderMoved(int value) {
-//	ofAppPtr->radius.set(value);
+	ofAppPtr->radius.set(value);
 //	ofAppPtr.radius.set(value);
 
 }
 void device::on_horizontalSlider_2_sliderMoved(int value) {
-	ofSetFrameRate(value);
+//	ofSetFrameRate(value);
+//	windowPtr->events().setFrameRate(value);
+
+	timer->setInterval(1000 / value);
 }

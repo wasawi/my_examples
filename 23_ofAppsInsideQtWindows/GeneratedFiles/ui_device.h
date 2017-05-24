@@ -144,6 +144,8 @@ public:
         sizePolicy.setHeightForWidth(horizontalSlider_2->sizePolicy().hasHeightForWidth());
         horizontalSlider_2->setSizePolicy(sizePolicy);
         horizontalSlider_2->setMinimumSize(QSize(0, 20));
+        horizontalSlider_2->setMinimum(1);
+        horizontalSlider_2->setMaximum(100);
         horizontalSlider_2->setOrientation(Qt::Horizontal);
 
         verticalLayout_2->addWidget(horizontalSlider_2);
