@@ -55,7 +55,8 @@ public:
     {
         if (device->objectName().isEmpty())
             device->setObjectName(QStringLiteral("device"));
-        device->resize(400, 300);
+        device->resize(500, 300);
+        device->setMinimumSize(QSize(500, 0));
         gridLayout = new QGridLayout(device);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
@@ -78,8 +79,8 @@ public:
         splitter->setChildrenCollapsible(false);
         tabWidget = new QTabWidget(splitter);
         tabWidget->setObjectName(QStringLiteral("tabWidget"));
-        tabWidget->setMinimumSize(QSize(300, 0));
-        tabWidget->setMaximumSize(QSize(300, 16777215));
+        tabWidget->setMinimumSize(QSize(220, 0));
+        tabWidget->setMaximumSize(QSize(220, 16777215));
         tab = new QWidget();
         tab->setObjectName(QStringLiteral("tab"));
         horizontalLayout_4 = new QHBoxLayout(tab);
@@ -90,7 +91,7 @@ public:
         toolBox->setObjectName(QStringLiteral("toolBox"));
         page = new QWidget();
         page->setObjectName(QStringLiteral("page"));
-        page->setGeometry(QRect(0, 0, 276, 161));
+        page->setGeometry(QRect(0, 0, 196, 161));
         toolBox->addItem(page, QStringLiteral("Page 1"));
         page_2 = new QWidget();
         page_2->setObjectName(QStringLiteral("page_2"));

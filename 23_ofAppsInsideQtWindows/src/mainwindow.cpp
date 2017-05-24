@@ -9,10 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-	//shared_ptr<ofApp> ofAppPtr(new ofApp);
-	//	shared_ptr<ofApp> ofAppPtr(new ofApp);
 
-	//	connect(ui->actionIMX262, SIGNAL(triggered()), this, SLOT(openWindow()));
+	ofAppPtr = make_shared<ofApp>();
+//	shared_ptr<ofApp> ofAppPtr(new ofApp);
+
+//	connect(ui->actionIMX262, SIGNAL(triggered()), this, SLOT(openWindow()));
 }
 
 //void MainWindow::openWindow()
@@ -27,8 +28,11 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::on_actionIMX262_triggered() {
-	ofAppPtr = make_shared<ofApp>();
-	loadSubWindow(new device( ofAppPtr, this));
+//	ofAppPtr = make_shared<ofApp>();
+//	loadSubWindow(new device( ofAppPtr, this));
+	loadSubWindow(new device(this, ofAppPtr));
+//	loadSubWindow(new device(this));
+
 }
 
 void MainWindow::loadSubWindow(QWidget* widget) {

@@ -28,7 +28,7 @@ void QtGLWidget::initializeGL()
 
 void QtGLWidget::paintGL()
 {
-//	cout << "paintGL" << endl;
+	cout << "paintGL" << endl;
 //	ofClear(ofColor::black);
 //	ofBackground(ofColor::darkCyan);
 	//for (int i = 0; i < 100; i++) {
@@ -487,6 +487,6 @@ codepoint,
 modifiers);
 
 ofAppPtr->keyPressed(key);
-windowPtr->events().notifyKeyPressed(key);
+qtWidgetPtr->events().notifyKeyPressed(key);
 */
 

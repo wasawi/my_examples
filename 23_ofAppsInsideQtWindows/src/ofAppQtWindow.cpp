@@ -3,6 +3,8 @@
 //----------------------------------------------------------
 //ofAppQtWindow::ofAppQtWindow(QApplication * qtApp) {
 ofAppQtWindow::ofAppQtWindow(QWidget *parent){
+	bShouldClose = false;
+
 	bEnableSetupScreen = true;
 	buttonPressed = false;
 	bWindowNeedsShowing = true;
@@ -35,7 +37,7 @@ ofAppQtWindow::ofAppQtWindow(QWidget *parent){
 		parentWidget = parent;
 	}
 	ofAppPtr = nullptr;
-	windowPtr = nullptr;
+	qtWidgetPtr = nullptr;
 }
 
 //----------------------------------------------------------
@@ -62,7 +64,7 @@ void ofAppQtWindow::setup(const ofGLWindowSettings & settings) {
 void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 	cout << "setup ofAppQtWindow" << endl;
 
-	if (windowPtr) {
+	if (qtWidgetPtr) {
 		ofLogError() << "window already setup, probably you are mixing old and new style setup";
 		ofLogError() << "call only ofCreateWindow(settings) or ofSetupOpenGL(...)";
 		ofLogError() << "calling window->setup() after ofCreateWindow() is not necesary and won't do anything";
@@ -103,22 +105,22 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 	//////////////////////////////////////
 	// create Qt window
 	//////////////////////////////////////
-	windowPtr = new QtGLWidget(this, parentWidget);
-	windowPtr->resize(settings.width, settings.height);
-//	windowPtr->setFormat(format);
-//	windowPtr->setWindowTitle(settings.title);
-	//	currentW = windowPtr->size().width();
-	//	currentH = windowPtr->size().height();
+	qtWidgetPtr = new QtGLWidget(this, parentWidget);
+	qtWidgetPtr->resize(settings.width, settings.height);
+//	qtWidgetPtr->setFormat(format);
+//	qtWidgetPtr->setWindowTitle(settings.title);
+	//	currentW = qtWidgetPtr->size().width();
+	//	currentH = qtWidgetPtr->size().height();
 	windowW = settings.width;
 	windowH = settings.height;
 	bWindowNeedsShowing = settings.visible;
-//	windowPtr->setAlphabits(settings.alphaBits);
-//	windowPtr->setNumSamples(settings.numSamples);
-	windowPtr->makeCurrent();
-	windowPtr->show();
+//	qtWidgetPtr->setAlphabits(settings.alphaBits);
+//	qtWidgetPtr->setNumSamples(settings.numSamples);
+	qtWidgetPtr->makeCurrent();
+	qtWidgetPtr->show();
 
 //	int framebufferW, framebufferH;
-//	glfwGetFramebufferSize(windowPtr, &framebufferW, &framebufferH);
+//	glfwGetFramebufferSize(qtWidgetPtr, &framebufferW, &framebufferH);
 
 	//this lets us detect if the window is running in a retina mode
 	//if (framebufferW != windowW) {
@@ -175,20 +177,20 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 }
 //------------------------------------------------------------
 void ofAppQtWindow::update() {
-//	cout << "update ofAppQtWindow" << endl;
+	cout << "update ofAppQtWindow" << endl;
 	events().notifyUpdate();
 
 	//////////////////////////////////////
 	// process Qt events
 	//////////////////////////////////////
-	windowPtr->makeCurrent();
-	windowPtr->update();
+	qtWidgetPtr->makeCurrent();
+	qtWidgetPtr->update();
 //	ofAppPtr->update();
 
 	//////////////////////////////////////
 
 	//show the window right before the first draw call.
-	if (bWindowNeedsShowing && windowPtr) {
+	if (bWindowNeedsShowing && qtWidgetPtr) {
 		// GLFW update was here
 		bWindowNeedsShowing = false;
 		if (settings.windowMode == OF_FULLSCREEN) {
@@ -217,7 +219,7 @@ void ofAppQtWindow::draw() {
 				//////////////////////////////////////
 				// process Qt events
 				//////////////////////////////////////
-//				windowPtr->swapBuffers();
+//				qtWidgetPtr->swapBuffers();
 //				qtAppPtr->processEvents();
 //				ofAppPtr->draw();
 			}
@@ -231,11 +233,11 @@ void ofAppQtWindow::draw() {
 			//////////////////////////////////////
 			// process Qt events
 			//////////////////////////////////////
-//			windowPtr->swapBuffers();
+//			qtWidgetPtr->swapBuffers();
 //			qtAppPtr->processEvents();
-//			windowPtr->makeCurrent();
+//			qtWidgetPtr->makeCurrent();
 //			ofAppPtr->draw();
-			windowPtr->update();
+			qtWidgetPtr->update();
 		}
 		else {
 			glFlush();
@@ -280,7 +282,7 @@ shared_ptr<ofBaseRenderer> & ofAppQtWindow::renderer() {
 
 QOpenGLWidget * ofAppQtWindow::getQOpenGLWidget()
 {
-	return windowPtr;
+	return qtWidgetPtr;
 }
 
 //------------------------------------------------------------
@@ -300,27 +302,27 @@ void ofAppQtWindow::exitApp() {
 
 ////------------------------------------------------------------
 //float ofAppQtWindow::getFrameRate() {
-//	return windowPtr->getGlFrameRate();
+//	return qtWidgetPtr->getGlFrameRate();
 //}
 
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowTitle(string title) {
 	settings.title = title;
-	windowPtr->setWindowTitle(title);
+	qtWidgetPtr->setWindowTitle(title);
 }
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getWindowSize() {
-	int width = windowPtr->width();
-	int height = windowPtr->height();
+	int width = qtWidgetPtr->width();
+	int height = qtWidgetPtr->height();
 
 	return glm::vec2(width, height);
 }
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getWindowPosition() {
-	int x = windowPtr->pos().x();
-	int y = windowPtr->pos().y();
+	int x = qtWidgetPtr->pos().x();
+	int y = qtWidgetPtr->pos().y();
 
 	cout << "getWindowPosition "<< x <<" "<< y << endl;
 	return glm::vec2{ x, y };
@@ -328,8 +330,8 @@ glm::vec2 ofAppQtWindow::getWindowPosition() {
 
 //------------------------------------------------------------
 glm::vec2 ofAppQtWindow::getScreenSize() {
-	int width = windowPtr->size().width();
-	int height = windowPtr->size().height();
+	int width = qtWidgetPtr->size().width();
+	int height = qtWidgetPtr->size().height();
 
 	cout << "getScreenSize " << width << " " << height << endl;
 	return glm::vec2{ width, height };
@@ -338,7 +340,7 @@ glm::vec2 ofAppQtWindow::getScreenSize() {
 //------------------------------------------------------------
 void ofAppQtWindow::setWindowPosition(int x, int y) {
 	cout << "setWindowPosition " << x << " " << y << endl;
-	windowPtr->move(QPoint{ x, y });
+	qtWidgetPtr->move(QPoint{ x, y });
 }
 
 //------------------------------------------------------------
@@ -359,19 +361,20 @@ void ofAppQtWindow::setWindowShape(int w, int h) {
 	}
 #else
 	cout << "setWindowShape " << currentW << " " << currentH << endl;
-	windowPtr->resize(currentW, currentH);
+	qtWidgetPtr->resize(currentW, currentH);
 #endif
 }
 
 void ofAppQtWindow::close()
 {
-	events().disable();
+//	qtWidgetPtr->makeCurrent();
+//	events().disable();
 	bWindowNeedsShowing = true;
 }
 
 //------------------------------------------------------------
 void ofAppQtWindow::hideCursor() {
-	windowPtr->unsetCursor();
+	qtWidgetPtr->unsetCursor();
 }
 
 //------------------------------------------------------------
@@ -397,13 +400,13 @@ void ofAppQtWindow::disableSetupScreen() {
 void ofAppQtWindow::makeCurrent()
 {
 	// used
-	windowPtr->makeCurrent();
+	qtWidgetPtr->makeCurrent();
 }
 
 void ofAppQtWindow::swapBuffers()
 {
 	//unused
-//	windowPtr->swapBuffers();
+//	qtWidgetPtr->swapBuffers();
 }
 
 void ofAppQtWindow::startRender()

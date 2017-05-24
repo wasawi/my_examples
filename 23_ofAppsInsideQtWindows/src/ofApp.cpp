@@ -1,5 +1,12 @@
 #include "ofApp.h"
 
+ofApp::~ofApp()
+{
+	OfGUI.clear();
+	framerate.removeListener(this, &ofApp::setFramerate);
+	verticalSync.removeListener(this, &ofApp::setVerticalSync);
+}
+
 //--------------------------------------------------------------
 void ofApp::setup(){
 	ofLogLevel(OF_LOG_VERBOSE);
@@ -17,12 +24,12 @@ void ofApp::setup(){
 	cursor = ofPoint(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2);
 	key_str = "";
 
-	parameters.setName("parameters");
-	parameters.add(radius.set("radius", 50, 1, 100));
-	parameters.add(color.set("color", 100, ofColor(0, 0), 255));
-	parameters.add(framerate.set("framerate", 60, 1, 100));
-	parameters.add(verticalSync.set("verticalSync", true));
-	OfGUI.setup(parameters);
+	//parameters.setName("parameters");
+	//parameters.add(radius.set("radius", 50, 1, 100));
+	//parameters.add(color.set("color", 100, ofColor(0, 0), 255));
+	//parameters.add(framerate.set("framerate", 60, 1, 100));
+	//parameters.add(verticalSync.set("verticalSync", true));
+	//OfGUI.setup(parameters);
 
 	framerate.addListener(this, &ofApp::setFramerate);
 	verticalSync.addListener(this, &ofApp::setVerticalSync);
@@ -48,7 +55,7 @@ void ofApp::setupGui() {
 }
 //--------------------------------------------------------------
 void ofApp::drawGui(ofEventArgs & args) {
-	OfGUI.draw();
+	//OfGUI.draw();
 }
 
 //--------------------------------------------------------------
@@ -88,7 +95,7 @@ void ofApp::draw(){
 	ofSetColor(ofColor::white);
 
 
-	OfGUI.draw();
+	//OfGUI.draw();
 }
 
 //--------------------------------------------------------------

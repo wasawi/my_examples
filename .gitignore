@@ -192,8 +192,6 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 
-
-
 ###############################
 # my ignores
 ###############################
@@ -206,5 +204,6 @@ FakesAssemblies/
 */*notes.txt
 
 # exported binaries
-/export
+export/
 /build-*
+GeneratedFiles/

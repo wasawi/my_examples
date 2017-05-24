@@ -13,7 +13,10 @@ namespace Ui {
 }
 
 class ofApp : public ofBaseApp{
-    public:
+public:
+//	ofApp();
+	~ofApp();
+
         void setup();
         void update();
         void draw();

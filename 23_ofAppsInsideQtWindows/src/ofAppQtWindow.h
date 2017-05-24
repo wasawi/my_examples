@@ -60,7 +60,7 @@ public:
 	static bool doesLoop() { return false; }
 	static bool allowsMultiWindow() { return true; }
 	static bool needsPolling() { return true; }
-	static void pollEvents() { glfwPollEvents(); }
+	static void pollEvents() { }
 
 	using ofAppBaseWindow::setup;
 #ifdef TARGET_OPENGLES
@@ -74,8 +74,8 @@ public:
 
 //	void paintEvent(QPaintEvent * event) override;
 
-//	bool getWindowShouldClose();
-//	void setWindowShouldClose();
+	bool getWindowShouldClose() { return bShouldClose; };
+	void setWindowShouldClose(bool value) { bShouldClose = value; };
 
 	void close();
 
@@ -159,13 +159,15 @@ public:
 	bool			bWindowNeedsShowing;
 	bool			iconSet;
 	int				pixelScreenCoordScale;
+	bool			bShouldClose;
+
 
 	// Of App Ptr
 	shared_ptr<ofBaseApp>		ofAppPtr;
 	// Qt Stuff
 	//QApplication *				qtAppPtr;
 	QWidget*					parentWidget;
-	QtGLWidget*					windowPtr;
+	QtGLWidget*					qtWidgetPtr;
 
 	void setStatusMessage(string s);
 
