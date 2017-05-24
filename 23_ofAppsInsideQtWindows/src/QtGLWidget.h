@@ -68,7 +68,7 @@ protected:
 	//void 	moveEvent(QMoveEvent *event);
 	//bool 	nativeEvent(const QByteArray &eventType, void *message, long *result);
 	//void 	paintEvent(QPaintEvent *event);
-	//void 	resizeEvent(QResizeEvent *event); // implementing this event will cause resizeGL to stop working..
+//	void 	resizeEvent(QResizeEvent *event); // implementing this event will cause resizeGL to stop working..
 	//void 	showEvent(QShowEvent *event);
 	//void 	tabletEvent(QTabletEvent *event);
 	//void 	wheelEvent(QWheelEvent *event);

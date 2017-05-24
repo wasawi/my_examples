@@ -82,8 +82,8 @@ public:
 	void hideCursor();
 	void showCursor();
 
-//	int getHeight();
-//	int getWidth();
+	int getHeight();
+	int getWidth();
 
 	ofCoreEvents & events();
 	shared_ptr<ofBaseRenderer> & renderer();

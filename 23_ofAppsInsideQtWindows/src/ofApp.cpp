@@ -21,7 +21,7 @@ void ofApp::setup(){
     radius = 100;
 	color = ofColor::blue;
 	
-	cursor = ofPoint(ofGetWindowWidth() / 2 - radius / 2, ofGetWindowHeight() / 2 - radius / 2);
+	cursor = ofPoint(window->getWidth() / 2 - radius / 2, window->getHeight() / 2 - radius / 2);
 	key_str = "";
 
 	//parameters.setName("parameters");
@@ -68,20 +68,30 @@ void ofApp::draw(){
 	ofBackground(ofColor::darkCyan);
 	ofEnableAntiAliasing();
 
+
+	//cout << "window w " << window->getWidth() << endl;
+	//cout << "window h " << window->getHeight() << endl;
+
+	//cout << "of w " << ofGetWindowWidth() << endl;
+	//cout << "of h " << ofGetWindowHeight() << endl;
+
 	ofSetColor(ofColor::cyan, 100);
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 1000; i++) {
 		ofRect(
-			ofRandom(ofGetWindowWidth()), 
-			ofRandom(ofGetWindowHeight()), 
-			ofRandom(50), 
-			ofRandom(50)
+//			ofRandom(window->getWidth()),
+//			ofRandom(window->getHeight()),
+			ofRandom(ofGetWindowWidth() - 20) + 10,
+			ofRandom(ofGetWindowHeight() - 20) + 10,
+			5, 
+			5
 		);
 	}
 
     ofPushStyle();
     ofSetColor(ofColor::ghostWhite);
-    ofDrawBitmapStringHighlight("value from slider: " + ofToString(radius), 20, 20);
-	ofDrawBitmapString("value from keys: " + key_str, 20, 40);
+	ofDrawBitmapStringHighlight("fps: " + ofToString(ofGetFrameRate(),0), 20, 20);
+	ofDrawBitmapStringHighlight("value from slider: " + ofToString(radius), 20, 40);
+	ofDrawBitmapString("value from keys: " + key_str, 20, 60);
 	key_str = "";
     ofPopStyle();
 	

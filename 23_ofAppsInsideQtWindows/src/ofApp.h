@@ -17,6 +17,8 @@ public:
 //	ofApp();
 	~ofApp();
 
+	shared_ptr<ofAppBaseWindow> window;
+
         void setup();
         void update();
         void draw();

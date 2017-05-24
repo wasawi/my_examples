@@ -28,7 +28,7 @@ void QtGLWidget::initializeGL()
 
 void QtGLWidget::paintGL()
 {
-	cout << "paintGL" << endl;
+//	cout << "paintGL" << endl;
 //	ofClear(ofColor::black);
 //	ofBackground(ofColor::darkCyan);
 	//for (int i = 0; i < 100; i++) {
@@ -38,7 +38,9 @@ void QtGLWidget::paintGL()
 
 void QtGLWidget::resizeGL(int width, int height)
 {
-//	cout << "resizeGL" << endl;
+	cout << "resizeGL" << endl;
+	instance->currentW = width;
+	instance->currentH = height;
 	instance->events().notifyWindowResized(width, height);
 }
 //------------------------------------------------------------
@@ -247,12 +249,23 @@ void QtGLWidget::mouseReleaseEvent(QMouseEvent *event)
 //	cout << "resizeEvent" << endl;
 //	int w = event->size().width();
 //	int h = event->size().height();
+//
+//	cout << "w "<< w << endl;
+//	cout << "h "<< h << endl;
+//
 //	if (instance->windowMode == OF_WINDOW) {
 //		instance->windowW = w * instance->pixelScreenCoordScale;
 //		instance->windowH = h * instance->pixelScreenCoordScale;
 //	}
 //	instance->currentW = w;
 //	instance->currentH = h;
+//
+//	int finalW = w*instance->pixelScreenCoordScale;
+//	int finalH = h*instance->pixelScreenCoordScale;
+//
+//	cout << "finalW " << finalW << endl;
+//	cout << "finalH " << finalH << endl;
+//
 //	instance->events().notifyWindowResized(w*instance->pixelScreenCoordScale, h*instance->pixelScreenCoordScale);
 //	instance->nFramesSinceWindowResized = 0;
 ////	static ofResizeEventArgs resizeEventArgs(w, h);

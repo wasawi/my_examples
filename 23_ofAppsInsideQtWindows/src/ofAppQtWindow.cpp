@@ -177,7 +177,7 @@ void ofAppQtWindow::setup(const ofQtGLWindowSettings & _settings) {
 }
 //------------------------------------------------------------
 void ofAppQtWindow::update() {
-	cout << "update ofAppQtWindow" << endl;
+//	cout << "update ofAppQtWindow" << endl;
 	events().notifyUpdate();
 
 	//////////////////////////////////////
@@ -380,6 +380,26 @@ void ofAppQtWindow::hideCursor() {
 //------------------------------------------------------------
 void ofAppQtWindow::showCursor() {
 	showCursor();
+}
+
+//------------------------------------------------------------
+int ofAppQtWindow::getWidth() {
+	if (orientation == OF_ORIENTATION_DEFAULT || orientation == OF_ORIENTATION_180) {
+		return currentW * pixelScreenCoordScale;
+	}
+	else {
+		return currentH * pixelScreenCoordScale;
+	}
+}
+
+//------------------------------------------------------------
+int ofAppQtWindow::getHeight() {
+	if (orientation == OF_ORIENTATION_DEFAULT || orientation == OF_ORIENTATION_180) {
+		return currentH * pixelScreenCoordScale;
+	}
+	else {
+		return currentW * pixelScreenCoordScale;
+	}
 }
 
 //------------------------------------------------------------
