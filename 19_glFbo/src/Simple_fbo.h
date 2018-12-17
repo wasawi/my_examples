@@ -1,0 +1,71 @@
+#pragma once
+
+#include "GL/glew.h"
+#include "GL/wglew.h"
+#include <string>
+#include <sstream>
+#include <iostream>
+
+class Simple_fbo {
+
+	public:
+		void setup(int x, int y, int width, int height);
+		void begin();
+		void end();
+		void draw();
+		void destroy();
+		
+	private:
+		int fbo_width = 300;
+		int fbo_height = 300;
+
+		// viewport
+//		int windowWidth;
+//		int windowHeight;
+		float plane = 1000;
+
+		// texture coordinates
+		int tx = 0;
+		int ty = 0;
+		int tw = 1;
+		int th = 1;
+
+		int x = 0;
+		int y = 0;
+		int w = 300;
+		int h = 300;
+
+		// fbo
+		bool fboSupported;
+		bool fboUsed;
+		GLuint textureId, fboId, rboDepthId;
+
+		///////////////////////////////////////////////////////////////////////////////
+		// print out the FBO infos
+		///////////////////////////////////////////////////////////////////////////////
+		void printFramebufferInfo(GLuint fbo);
+
+
+		///////////////////////////////////////////////////////////////////////////////
+		// check FBO completeness
+		///////////////////////////////////////////////////////////////////////////////
+		bool checkFramebufferStatus(GLuint fbo);
+
+
+		///////////////////////////////////////////////////////////////////////////////
+		// return texture parameters as string using glGetTexLevelParameteriv()
+		///////////////////////////////////////////////////////////////////////////////
+		std::string getTextureParameters(GLuint id);
+
+
+
+		///////////////////////////////////////////////////////////////////////////////
+		// return renderbuffer parameters as string using glGetRenderbufferParameteriv
+		///////////////////////////////////////////////////////////////////////////////
+		std::string getRenderbufferParameters(GLuint id);
+
+		///////////////////////////////////////////////////////////////////////////////
+		// convert OpenGL internal format enum to string
+		///////////////////////////////////////////////////////////////////////////////
+		std::string convertInternalFormatToString(GLenum format);
+};

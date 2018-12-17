@@ -172,11 +172,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\glInfo.cpp" />
+    <ClCompile Include="src\Simple_fbo.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ofApp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\glInfo.h" />
+    <ClInclude Include="src\Simple_fbo.h" />
     <ClInclude Include="src\ofApp.h" />
     <ClInclude Include="src\teapot.h" />
   </ItemGroup>
